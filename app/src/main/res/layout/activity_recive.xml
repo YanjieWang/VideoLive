@@ -23,5 +23,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="开始播放" />
+        <Button
+            android:id="@+id/recode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="开始录制" />
     </LinearLayout>
 </LinearLayout>

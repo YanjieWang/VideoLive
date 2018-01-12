@@ -1,6 +1,7 @@
 package com.library.live;
 
 import com.library.common.UdpControlInterface;
+import com.library.live.file.WriteMp4;
 import com.library.live.stream.BaseRecive;
 import com.library.live.vc.VoiceTrack;
 import com.library.live.vd.VDDecoder;
@@ -15,15 +16,19 @@ public class Player {
     private VoiceTrack voiceTrack;
     private BaseRecive baseRecive;
     private PlayerView playerView;
+    private WriteMp4 writeMp4;
 
-    private Player(PlayerView playerView, String codetype, BaseRecive baseRecive, UdpControlInterface udpControl, int multiple) {
+    private Player(PlayerView playerView, String codetype, BaseRecive baseRecive, UdpControlInterface udpControl, int multiple,String path) {
         this.baseRecive = baseRecive;
         this.playerView = playerView;
         this.baseRecive.setUdpControl(udpControl);
 
-        vdDecoder = new VDDecoder(playerView, codetype, baseRecive);
+        vdDecoder = new VDDecoder(playerView, codetype, baseRecive,writeMp4);
         voiceTrack = new VoiceTrack(baseRecive);
         voiceTrack.setIncreaseMultiple(multiple);
+        //文件录入类
+        if(path != null)writeMp4 = new WriteMp4(path);
+
     }
 
     public void setVoiceIncreaseMultiple(int multiple) {
@@ -48,6 +53,15 @@ public class Player {
         baseRecive.destroy();
         vdDecoder.destroy();
         voiceTrack.destroy();
+        if(writeMp4!=null)writeMp4.stop();
+    }
+
+    public void starRecode() {
+        if(writeMp4!=null)writeMp4.start();
+    }
+
+    public void stopRecode() {
+        if(writeMp4!=null)writeMp4.stop();
     }
 
     public void write(byte[] bytes) {
@@ -69,6 +83,8 @@ public class Player {
         private int videoFrameCacheMin = 6;//视频帧达到播放标准的数量
 
         private IsOutBuffer isOutBuffer = null;//缓冲接口回调
+
+        String VideoPath = null;
 
         public Buider(PlayerView playerView) {
             this.playerView = playerView;
@@ -121,13 +137,18 @@ public class Player {
             return this;
         }
 
+        public Buider setVideoPath(String path) {
+            VideoPath = path;
+            return this;
+        }
+
         public Player build() {
             baseRecive.setUdpPacketCacheMin(udpPacketCacheMin);
             baseRecive.setWeightCallback(playerView);//将playerView接口设置给baseRecive用以回调图像比例
             baseRecive.setIsInBuffer(playerView);//将playerView接口设置给baseRecive用以回调缓冲状态
             playerView.setIsOutBuffer(isOutBuffer);//给playerView设置isOutBuffer接口用以将缓冲状态回调给客户端
             baseRecive.setOther(videoFrameCacheMin);
-            return new Player(playerView, codetype, baseRecive, udpControl, multiple);
+            return new Player(playerView, codetype, baseRecive, udpControl, multiple,VideoPath);
         }
     }
 }

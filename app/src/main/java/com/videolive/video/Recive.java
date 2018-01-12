@@ -13,6 +13,7 @@ import com.videolive.R;
 public class Recive extends AppCompatActivity {
     private Player player;
     private Button jiestar;
+    private Button recode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,12 +23,13 @@ public class Recive extends AppCompatActivity {
         //需要让服务器知道自己是接收方并且知道自己的IP，这个自行完成
 
         jiestar = findViewById(R.id.jiestar);
-
+        recode = findViewById(R.id.recode);
         player = new Player.Buider((PlayerView) findViewById(R.id.playerView))
                 .setPullMode(new UdpRecive(getIntent().getExtras().getInt("port")))
                 .setVideoCode(getIntent().getExtras().getString("videoCode"))
                 .setMultiple(getIntent().getExtras().getInt("multiple"))
                 .setCenterScaleType(true)
+                .setVideoPath("/sdcard/videolive.mp4")
                 .build();
 
         jiestar.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +41,18 @@ public class Recive extends AppCompatActivity {
                 } else {
                     jiestar.setText("开始播放");
                     player.stop();
+                }
+            }
+        });
+        recode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recode.getText().toString().equals("开始录制")) {
+                    player.starRecode();
+                    recode.setText("停止录制");
+                } else {
+                    recode.setText("开始录制");
+                    player.stopRecode();
                 }
             }
         });
