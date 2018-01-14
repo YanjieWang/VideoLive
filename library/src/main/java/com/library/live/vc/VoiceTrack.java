@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 
 import com.library.common.VoicePlayer;
+import com.library.live.file.WriteMp4;
 import com.library.live.stream.BaseRecive;
 import com.library.util.OtherUtil;
 import com.library.util.VoiceUtil;
@@ -18,7 +19,7 @@ public class VoiceTrack implements VoicePlayer {
     private AudioTrack audioTrack;
     private int multiple = 1;
 
-    public VoiceTrack(BaseRecive baseRecive) {
+    public VoiceTrack(BaseRecive baseRecive,WriteMp4 writeMp4) {
         int recBufSize = AudioTrack.getMinBufferSize(
                 OtherUtil.samplerate,
                 AudioFormat.CHANNEL_OUT_STEREO,
@@ -32,7 +33,7 @@ public class VoiceTrack implements VoicePlayer {
                 recBufSize,
                 AudioTrack.MODE_STREAM);
 
-        vcdecoder = new VCDecoder(baseRecive);
+        vcdecoder = new VCDecoder(baseRecive,writeMp4);
         //注册回调接口
         vcdecoder.register(this);
     }

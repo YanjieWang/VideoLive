@@ -1,5 +1,6 @@
 package com.library.live;
 
+
 import com.library.common.UdpControlInterface;
 import com.library.live.file.WriteMp4;
 import com.library.live.stream.BaseRecive;
@@ -23,11 +24,13 @@ public class Player {
         this.playerView = playerView;
         this.baseRecive.setUdpControl(udpControl);
 
+        if(path != null)writeMp4 = new WriteMp4(path);
         vdDecoder = new VDDecoder(playerView, codetype, baseRecive,writeMp4);
-        voiceTrack = new VoiceTrack(baseRecive);
+        voiceTrack = new VoiceTrack(baseRecive,writeMp4);
         voiceTrack.setIncreaseMultiple(multiple);
         //文件录入类
-        if(path != null)writeMp4 = new WriteMp4(path);
+
+
 
     }
 

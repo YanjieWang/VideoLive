@@ -6,6 +6,7 @@ import android.media.MediaFormat;
 
 import com.library.common.VoiceCallback;
 import com.library.common.VoicePlayer;
+import com.library.live.file.WriteMp4;
 import com.library.live.stream.BaseRecive;
 import com.library.util.OtherUtil;
 import com.library.util.mLog;
@@ -21,11 +22,13 @@ public class VCDecoder implements VoiceCallback {
     private final String AAC_MIME = MediaFormat.MIMETYPE_AUDIO_AAC;
 
     private MediaCodec mDecoder;
+    private WriteMp4 writeMp4;
     private boolean isdecoder = false;
     private VoicePlayer voicePlayer;
 
-    public VCDecoder(BaseRecive baseRecive) {
+    public VCDecoder(BaseRecive baseRecive, WriteMp4 writeMp4) {
         baseRecive.setVoiceCallback(this);
+        this.writeMp4 = writeMp4;
         try {
             mDecoder = MediaCodec.createDecoderByType(AAC_MIME);
             MediaFormat mediaFormat = new MediaFormat();
@@ -38,6 +41,7 @@ public class VCDecoder implements VoiceCallback {
 
             byte[] data = new byte[]{(byte) 0x12, (byte) 0x10};
             mediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(data));
+            writeMp4.addTrack(mediaFormat, WriteMp4.voice);
 
             mDecoder.configure(mediaFormat, null, null, 0);
         } catch (IOException e) {
@@ -53,6 +57,7 @@ public class VCDecoder implements VoiceCallback {
     @Override
     public void voiceCallback(byte[] voice) {
         if (isdecoder) {
+            writeFile(voice, voice.length);
             decoder(voice);
         }
     }
@@ -94,6 +99,24 @@ public class VCDecoder implements VoiceCallback {
     public void start() {
         isdecoder = true;
     }
+
+
+    private MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
+   private ByteBuffer writebuffer = ByteBuffer.allocate(548);
+
+    /*
+    写声音进文件
+     */
+    private void writeFile(byte[] output, int length) {
+        writebuffer.clear();
+        writebuffer.put(output);
+        bufferInfo.size = length;
+        bufferInfo.offset = 0;
+        bufferInfo.presentationTimeUs = OtherUtil.getFPS();
+        bufferInfo.flags = MediaCodec.CRYPTO_MODE_UNENCRYPTED;
+        writeMp4.write(WriteMp4.voice, writebuffer, bufferInfo);
+    }
+
 
     /*
      * 释放资源

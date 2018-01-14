@@ -101,7 +101,7 @@ public class VDDecoder implements SurfaceHolder.Callback, VideoInformationInterf
             } else if (MIME_TYPE.equals(H265)) {
                 mediaFormat.setByteBuffer("csd-0", getH265information());
             }
-
+            writeMp4.addTrack(mediaFormat, WriteMp4.video);
             mCodec.configure(mediaFormat, holder.getSurface(), null, 0);
             mCodec.start();
             isMediaCodecInit = true;
@@ -264,6 +264,6 @@ public class VDDecoder implements SurfaceHolder.Callback, VideoInformationInterf
                 writebuffer.put(output);
             }
         }
-        writeMp4.write(WriteMp4.video, writebuffer, bufferInfo);
+        if(writeMp4 != null)writeMp4.write(WriteMp4.video, writebuffer, bufferInfo);
     }
 }

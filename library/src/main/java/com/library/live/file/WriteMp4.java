@@ -56,6 +56,8 @@ public class WriteMp4 {
         if (videoFormat != null && voiceFormat != null) {
             if (isShouldStart) {
                 start();
+            } else {
+                isShouldStart = true;
             }
         }
     }
@@ -64,7 +66,7 @@ public class WriteMp4 {
     public void start() {
         RECODE_STATUS = RECODE_STATUS_READY;
         synchronized (lock) {
-            if (voiceFormat != null && videoFormat != null && mMediaMuxer == null) {
+            if (voiceFormat != null && videoFormat != null && mMediaMuxer == null && isShouldStart) {
                 isShouldStart = false;
                 setPath();
                 try {
@@ -118,6 +120,7 @@ public class WriteMp4 {
     public void stop() {
         synchronized (lock) {
             if (RECODE_STATUS == RECODE_STATUS_START) {
+                RECODE_STATUS = RECODE_STATUS_STOP;
                 try {
                     mMediaMuxer.release();
                     mLog.log("app_WriteMp4", "文件录制关闭");
