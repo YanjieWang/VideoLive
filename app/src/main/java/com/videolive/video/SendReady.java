@@ -54,6 +54,7 @@ public class SendReady extends AppCompatActivity {
             return;
         }
         rotate = findViewById(R.id.rotate);
+        sb_preview = findViewById(R.id.sb_preview);
         rotate.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -163,7 +164,7 @@ public class SendReady extends AppCompatActivity {
         Camera camera = Camera.open(camId);
         Camera.Parameters params = camera.getParameters();
         previewSIzes = params.getSupportedPreviewSizes();
-        if(adapter != null)adapter.notifyDataSetInvalidated();
+        if(adapter != null-m )adapter.notifyDataSetInvalidated();
         list = new String[previewSIzes.size()];
         for(int i = 0 ;i < previewSIzes.size();i++){
             Camera.Size size = previewSIzes.get(i);
