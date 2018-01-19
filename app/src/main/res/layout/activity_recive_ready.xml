@@ -6,7 +6,30 @@
     android:orientation="vertical"
     android:padding="10dp"
     tools:context="com.videolive.video.ReciveReady">
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:id="@+id/rg_net_protical"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <RadioButton
+            android:id="@+id/rb_udp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:gravity="center"
+            android:text="Udp协议" />
+
+        <RadioButton
+            android:id="@+id/rb_tcp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Tcp协议"
+            android:textSize="15dp" />
+    </RadioGroup>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

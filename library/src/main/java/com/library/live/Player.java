@@ -67,9 +67,6 @@ public class Player {
         if(writeMp4!=null)writeMp4.stop();
     }
 
-    public void write(byte[] bytes) {
-        baseRecive.write(bytes);
-    }
 
     public int getReciveStatus() {
         return baseRecive.getReciveStatus();
@@ -146,7 +143,7 @@ public class Player {
         }
 
         public Player build() {
-            baseRecive.setUdpPacketCacheMin(udpPacketCacheMin);
+            baseRecive.setPacketCacheMin(udpPacketCacheMin);
             baseRecive.setWeightCallback(playerView);//将playerView接口设置给baseRecive用以回调图像比例
             baseRecive.setIsInBuffer(playerView);//将playerView接口设置给baseRecive用以回调缓冲状态
             playerView.setIsOutBuffer(isOutBuffer);//给playerView设置isOutBuffer接口用以将缓冲状态回调给客户端

@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.library.live.Publish;
+import com.library.live.stream.BaseSend;
+import com.library.live.stream.tcp.TcpSend;
 import com.library.live.stream.upd.UdpSend;
 import com.library.live.view.PublishView;
 import com.videolive.R;
@@ -29,9 +31,15 @@ public class Send extends AppCompatActivity {
         rot = findViewById(R.id.rot);
         takePicture = findViewById(R.id.takePicture);
         record = findViewById(R.id.record);
-
+        BaseSend bs = null;
+        if(getIntent().getExtras().getString("net_protical").equals("Udp")){
+            bs = new UdpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
+        }else{
+            bs = new TcpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
+            //bs.setEncryptPassword("1234567890123456");
+        }
         publish = new Publish.Buider(this, (PublishView) findViewById(R.id.publishView))
-                .setPushMode(new UdpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port")))
+                .setPushMode(bs)
                 .setFrameRate(getIntent().getExtras().getInt("framerate"))
                 .setVideoCode(getIntent().getExtras().getString("videoCode"))
                 .setIsPreview(getIntent().getExtras().getBoolean("ispreview"))

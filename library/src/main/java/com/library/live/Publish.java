@@ -281,9 +281,8 @@ public class Publish implements TextureView.SurfaceTextureListener {
             mLog.log("pictureSize", "推流分辨率  =  " + publishSize.getWidth() + " * " + publishSize.getHeight());
             mLog.log("pictureSize", "预览分辨率  =  " + previewSize.getWidth() + " * " + previewSize.getHeight());
             mLog.log("pictureSize", "采集分辨率  =  " + collectionSize.getWidth() + " * " + collectionSize.getHeight());
+            
 
-            //计算比例(需对调宽高)
-            baseSend.setWeight((double) publishSize.getHeight() / publishSize.getWidth());
             if (isPreview) {
                 publishView.setWeight((double) previewSize.getHeight() / previewSize.getWidth());
             }

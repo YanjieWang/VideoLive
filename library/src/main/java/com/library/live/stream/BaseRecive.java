@@ -18,11 +18,12 @@ public abstract class BaseRecive {
     protected VoiceCallback voiceCallback = null;
     protected VideoCallback videoCallback = null;
     protected WeightCallback weightCallback;
+    protected int packetMin = 3;
+    protected String mPassword = null;
 
     /**
      * 手动送入数据的方法
      */
-    public abstract void write(byte[] bytes);
 
     public abstract void startRevice();
 
@@ -47,7 +48,9 @@ public abstract class BaseRecive {
     }
 
     //控制缓存包数量 用于解决udp乱序
-    public abstract void setUdpPacketCacheMin(int udpPacketCacheMin);
+    public void setPacketCacheMin(int packetCacheMin){
+        packetMin = packetCacheMin;
+    }
 
     /*
     子类可以通过这个方法获得一些策略参数，根据需要决定是否使用,
@@ -65,5 +68,14 @@ public abstract class BaseRecive {
 
     public int getReciveStatus() {
         return RECIVE_STATUS;
+    }
+
+    public void getInformation(byte[] important) {
+        informaitonInterface.Information(important);
+    }
+
+    public BaseRecive setDecryptPassword(String password){
+        this.mPassword = password;
+        return this;
     }
 }

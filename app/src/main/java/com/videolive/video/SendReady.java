@@ -54,6 +54,7 @@ public class SendReady extends AppCompatActivity {
     private int frontCamId = 1;
     private Spinner sb_wifi_direct;
     private WifiP2pDevice[] mWifiP2pDeviceList;
+    private RadioGroup rg_net_protical;
 
 
     @Override
@@ -135,7 +136,7 @@ public class SendReady extends AppCompatActivity {
 
         sb_wifi_direct = findViewById(R.id.sb_wifi_direct);
         initWifiDirect();
-
+        rg_net_protical = findViewById(R.id.rg_net_protical);
     }
 
 
@@ -243,7 +244,11 @@ public class SendReady extends AppCompatActivity {
         } else {
             bundle.putBoolean("rotate", false);
         }
-
+        if (rg_net_protical.getCheckedRadioButtonId()==R.id.rb_udp) {
+            bundle.putString("net_protical", "Udp");
+        } else {
+            bundle.putString("net_protical", "Tcp");
+        }
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.library.live.Player;
+import com.library.live.stream.BaseRecive;
+import com.library.live.stream.tcp.TcpRecive;
 import com.library.live.stream.upd.UdpRecive;
 import com.library.live.view.PlayerView;
 import com.videolive.R;
@@ -24,12 +26,21 @@ public class Recive extends AppCompatActivity {
 
         jiestar = findViewById(R.id.jiestar);
         recode = findViewById(R.id.recode);
+
+        BaseRecive br = null;
+        if(getIntent().getExtras().getString("net_protical").equals("Udp")){
+            br = new UdpRecive(getIntent().getExtras().getInt("port"));
+        }else{
+            br = new TcpRecive(getIntent().getExtras().getInt("port"));
+            //br.setDecryptPassword("1234567890123456");
+        }
+
         player = new Player.Buider((PlayerView) findViewById(R.id.playerView))
-                .setPullMode(new UdpRecive(getIntent().getExtras().getInt("port")))
+                .setPullMode(br)
                 .setVideoCode(getIntent().getExtras().getString("videoCode"))
                 .setMultiple(getIntent().getExtras().getInt("multiple"))
                 .setCenterScaleType(true)
-                .setVideoPath("/sdcard/videolive.mp4")
+                .setVideoPath("/sdcard")
                 .build();
 
         jiestar.setOnClickListener(new View.OnClickListener() {

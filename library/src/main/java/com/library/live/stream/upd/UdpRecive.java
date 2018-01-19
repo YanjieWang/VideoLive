@@ -126,7 +126,6 @@ public class UdpRecive extends BaseRecive implements CachingStrategyCallback {
 //    int vcnum = 0;
 
     //添加解码数据
-    @Override
     public void write(byte[] bytes) {
         if (RECIVE_STATUS == RECIVE_STATUS_START) {
             if (udpControl != null) {
@@ -266,11 +265,6 @@ public class UdpRecive extends BaseRecive implements CachingStrategyCallback {
             singleThreadExecutor.shutdownNow();
             singleThreadExecutor = null;
         }
-    }
-
-    @Override
-    public void setUdpPacketCacheMin(int udpPacketCacheMin) {
-        this.udpPacketCacheMin = udpPacketCacheMin;
     }
 
     /*

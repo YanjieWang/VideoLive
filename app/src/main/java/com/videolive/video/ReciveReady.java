@@ -17,6 +17,7 @@ public class ReciveReady extends AppCompatActivity {
     private RadioGroup videoCode;
     private Button begin;
     private EditText multiple;
+    private RadioGroup rg_net_protical;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class ReciveReady extends AppCompatActivity {
                 start();
             }
         });
+        rg_net_protical = findViewById(R.id.rg_net_protical);
     }
 
     private void start() {
@@ -46,6 +48,11 @@ public class ReciveReady extends AppCompatActivity {
             bundle.putString("videoCode", VDDecoder.H264);
         } else {
             bundle.putString("videoCode", VDDecoder.H265);
+        }
+        if (rg_net_protical.getCheckedRadioButtonId()==R.id.rb_udp) {
+            bundle.putString("net_protical", "Udp");
+        } else {
+            bundle.putString("net_protical", "Tcp");
         }
         bundle.putInt("port", Integer.parseInt(port.getText().toString()));
         intent.putExtras(bundle);

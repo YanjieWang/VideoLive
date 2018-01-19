@@ -1,5 +1,7 @@
 package com.library.live.stream.upd;
 
+import android.util.Log;
+
 import com.library.live.stream.BaseSend;
 import com.library.util.OtherUtil;
 import com.library.util.SingleThreadExecutor;
@@ -36,8 +38,10 @@ public class UdpSend extends BaseSend {
     private ArrayBlockingQueue<byte[]> sendQueue = new ArrayBlockingQueue<>(OtherUtil.QueueNum);
 
     public UdpSend(String ip, int port) {
+        Log.i("wyj","UdpSend");
         try {
             socket = new DatagramSocket(port);
+            Log.i("wyj","socket"+socket);
             socket.setSendBufferSize(1024 * 1024);
             ismysocket = true;
         } catch (SocketException e) {
@@ -103,7 +107,7 @@ public class UdpSend extends BaseSend {
         }
     }
 
-    @Override
+
     public void setWeight(double weight) {
         this.weight = OtherUtil.setWeitht(weight);
     }
