@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.videolive">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW"/>
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -33,7 +35,10 @@
         <activity android:name=".video.SendReady" />
         <activity android:name=".video.ReciveReady" />
         <activity android:name=".voice.VoiceReady" />
-        <activity android:name=".voice.Voice"></activity>
+        <activity android:name=".voice.Voice"/>
+        <activity android:name=".video.ServerActivity"/>
+        <activity android:name=".video.ClientActivity"/>
+        <service android:name="com.library.rpc.RpcSeverService"/>
 
     </application>
 

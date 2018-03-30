@@ -1,6 +1,7 @@
 package com.library.live.file;
 
 import android.media.MediaCodec;
+import android.media.MediaCrypto;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.os.Environment;

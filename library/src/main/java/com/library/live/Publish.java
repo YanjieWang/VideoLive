@@ -731,9 +731,57 @@ public class Publish implements TextureView.SurfaceTextureListener {
 
         public Publish build() {
             baseSend.setUdpControl(udpControl);
-            return new Publish(context, publishView, isPreview, publishSize, previewSize, collectionSize, frameRate,
+            Publish pb = new Publish(context, publishView, isPreview, publishSize, previewSize, collectionSize, frameRate,
                     publishBitrate, collectionBitrate, collectionbitrate_vc, publishbitrate_vc, codetype, rotate, dirpath,
                     baseSend, picturedirpath, screenshotsMode);
+            mLog.log("siudf",""+pb);
+            return pb;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Publish{" +
+                "context=" + context +
+                ", frameMax=" + frameMax +
+                ", frameRateControlQueue=" + frameRateControlQueue +
+                ", vdEncoder=" + vdEncoder +
+                ", recordEncoderVD=" + recordEncoderVD +
+                ", voiceRecord=" + voiceRecord +
+                ", baseSend=" + baseSend +
+                ", rotate=" + rotate +
+                ", rotateAngle=" + rotateAngle +
+                ", isPreview=" + isPreview +
+                ", isCameraBegin=" + isCameraBegin +
+                ", useuvPicture=" + useuvPicture +
+                ", ScreenshotsMode=" + ScreenshotsMode +
+                ", frameRate=" + frameRate +
+                ", publishBitrate=" + publishBitrate +
+                ", collectionBitrate=" + collectionBitrate +
+                ", publishbitrate_vc=" + publishbitrate_vc +
+                ", collectionbitrate_vc=" + collectionbitrate_vc +
+                ", codetype='" + codetype + '\'' +
+                ", cameraDevice=" + cameraDevice +
+                ", session=" + session +
+                ", captureRequest=" + captureRequest +
+                ", previewImageReader=" + previewImageReader +
+                ", pictureImageReader=" + pictureImageReader +
+                ", publishView=" + publishView +
+                ", previewSize=" + previewSize +
+                ", publishSize=" + publishSize +
+                ", collectionSize=" + collectionSize +
+                ", facingFront=" + facingFront +
+                ", picturedirpath='" + picturedirpath + '\'' +
+                ", pictureCallback=" + pictureCallback +
+                ", controlFrameRateThread=" + controlFrameRateThread +
+                ", handlerCamearThread=" + handlerCamearThread +
+                ", camearHandler=" + camearHandler +
+                ", frameHandler=" + frameHandler +
+                ", writeMp4=" + writeMp4 +
+                ", manager=" + manager +
+                ", cameraId='" + cameraId + '\'' +
+                ", yuvPicture=" + Arrays.toString(yuvPicture) +
+                ", pictureRunnable=" + pictureRunnable +
+                '}';
     }
 }

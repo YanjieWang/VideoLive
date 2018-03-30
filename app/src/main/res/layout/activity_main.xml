@@ -11,18 +11,34 @@
         android:id="@+id/push"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="视频推流端" />
-
+        android:text="视频推流端"
+        android:onClick="startPush"/>
     <Button
         android:id="@+id/pull"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="视频播放端" />
+        android:text="视频播放端"
+        android:onClick="startPull"/>
+
+    <Button
+        android:id="@+id/server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="无界面服务端"
+        android:onClick="startSever"/>
+
+    <Button
+        android:id="@+id/clicent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="客户端"
+        android:onClick="startClicent"/>
 
     <Button
         android:id="@+id/voice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="语音" />
+        android:text="语音"
+        android:onClick="startVoice"/>
 
 </LinearLayout>

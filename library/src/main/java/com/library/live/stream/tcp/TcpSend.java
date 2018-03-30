@@ -30,7 +30,6 @@ public class TcpSend extends BaseSend {
     private String pass;
 
     private ArrayBlockingQueue<TcpBytes> sendQueue = new ArrayBlockingQueue<>(OtherUtil.QueueNum);
-    //SynchronousQueue<TcpBytes> sendQueue = new SynchronousQueue();
     ObjectOutputStream stream = null;
 
     public TcpSend(String ip, int port) {

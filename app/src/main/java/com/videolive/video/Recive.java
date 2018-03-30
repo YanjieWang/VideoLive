@@ -10,12 +10,18 @@ import com.library.live.stream.BaseRecive;
 import com.library.live.stream.tcp.TcpRecive;
 import com.library.live.stream.upd.UdpRecive;
 import com.library.live.view.PlayerView;
+import com.library.rpc.Commond;
+import com.library.util.mLog;
 import com.videolive.R;
+
+import java.util.concurrent.ArrayBlockingQueue;
 
 public class Recive extends AppCompatActivity {
     private Player player;
     private Button jiestar;
     private Button recode;
+    private ArrayBlockingQueue<Commond.Response> responseQueue = new ArrayBlockingQueue<>(100);
+    private ArrayBlockingQueue<Commond.Request.RequestBase> resquestQueue = new ArrayBlockingQueue<>(100);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +73,18 @@ public class Recive extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     @Override
     protected void onDestroy() {
         player.destroy();
         super.onDestroy();
+        mLog.log("onDestory", "onDestory");
+
     }
+
+
+
+
 }

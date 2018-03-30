@@ -28,8 +28,6 @@ import com.videolive.R;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import static android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
@@ -61,7 +59,6 @@ public class SendReady extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_ready);
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         if(Camera.getNumberOfCameras()<=0){
             Toast.makeText(this,"设备无摄像头，无法进行推流操作",Toast.LENGTH_LONG).show();
