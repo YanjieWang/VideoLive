@@ -54,9 +54,9 @@ public class RpcSeverService extends Service {
         super.onCreate();
         View mView = LayoutInflater.from(this).inflate(R.layout.sevice_publish_view,
                 null);
-        pv = mView.findViewById(R.id.publish_view);
+        //pv = mView.findViewById(R.id.publish_view);
 
-        BaseSend bs = new UdpSend("10.20.10.162", 8765);
+        BaseSend bs = new UdpSend("192.168.49.1", 8765);
 
         publish = new Publish.Buider(this, pv)
                 .setPushMode(bs)
@@ -132,7 +132,7 @@ public class RpcSeverService extends Service {
                                 request = mObjectInputStream.readObject();
                                 if (request != null && request instanceof Commond.Request.RequestBase) {
                                     Commond.Request.RequestBase requestBase = (Commond.Request.RequestBase) request;
-                                    requestBase.doRequest(RpcSeverService.this, responseQueue);
+                                    requestBase.doRequest(RpcSeverService.this, responseQueue,publish);
                                     mLog.log(TAG, "收到请求" + requestBase);
                                 } else {
                                     Commond.Response res = new Commond.Response();

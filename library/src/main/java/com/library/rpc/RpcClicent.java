@@ -58,11 +58,13 @@ public class RpcClicent {
 
     public boolean sendRequest(Commond.Request.RequestBase requestBase) {
         boolean res = false;
-        try {
-            resquestQueue.put(requestBase);
-            res = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(isConnected) {
+            try {
+                resquestQueue.put(requestBase);
+                res = true;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return res;
     }
@@ -213,6 +215,7 @@ public class RpcClicent {
         }
 
         private void myStop() {
+            resquestQueue.clear();
             if (mObjectInputStream != null) {
                 try {
                     mObjectInputStream.close();

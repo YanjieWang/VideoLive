@@ -2,6 +2,7 @@ package com.library.rpc;
 
 import android.content.Context;
 
+import com.library.live.Publish;
 import com.library.util.mLog;
 
 import java.io.Serializable;
@@ -29,7 +30,7 @@ public class Commond {
         public static abstract class RequestBase implements Serializable {
             public String pass;
 
-            public abstract void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue);
+            public abstract void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue,Publish publish);
 
             public boolean checkPass(ArrayBlockingQueue<Response> responseQueue) {
 
@@ -55,7 +56,7 @@ public class Commond {
             int port;
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
 
                 if (checkPass(responseQueue)) {
                     Commond.Response res = new Commond.Response();
@@ -76,7 +77,7 @@ public class Commond {
             public String pass_new;
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
                 mLog.log("Commond", "pass_new=" + pass_new);
                 mLog.log("Commond", "pass=" + pass);
                 mLog.log("Commond", "Config.password=" + Config.password);
@@ -127,7 +128,7 @@ public class Commond {
             public int ControlPort;
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
 
             }
         }
@@ -135,9 +136,10 @@ public class Commond {
         public static class StartRecode extends RequestBase implements Serializable {
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue ,Publish publish) {
 
                 if (checkPass(responseQueue)) {
+                    publish.startRecode();
                     Commond.Response res = new Commond.Response();
                     res.success = true;
                     res.content = "录像开启成功";
@@ -153,9 +155,10 @@ public class Commond {
         public static class StopRecode extends RequestBase implements Serializable {
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue,Publish publish) {
 
                 if (checkPass(responseQueue)) {
+                    publish.stopRecode();
                     Commond.Response res = new Commond.Response();
                     res.success = true;
                     res.content = "录像停止成功";
@@ -171,9 +174,10 @@ public class Commond {
         public static class StartPush extends RequestBase implements Serializable {
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
 
                 if (checkPass(responseQueue)) {
+                    publish.start();
                     Commond.Response res = new Commond.Response();
                     res.success = true;
                     res.content = "推流开启成功";
@@ -189,12 +193,51 @@ public class Commond {
         public static class StopPush extends RequestBase implements Serializable {
 
             @Override
-            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue) {
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
 
                 if (checkPass(responseQueue)) {
+                    publish.stop();
                     Commond.Response res = new Commond.Response();
                     res.success = true;
                     res.content = "推流关闭成功";
+                    try {
+                        responseQueue.put(res);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        public static class SwitchCamera extends RequestBase implements Serializable {
+
+            @Override
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
+
+                if (checkPass(responseQueue)) {
+                    publish.rotate();
+                    Commond.Response res = new Commond.Response();
+                    res.success = true;
+                    res.content = "推流关闭成功";
+                    try {
+                        responseQueue.put(res);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        public static class Rotate extends RequestBase implements Serializable {
+
+            @Override
+            public void doRequest(Context con, ArrayBlockingQueue<Response> responseQueue, Publish publish) {
+
+                if (checkPass(responseQueue)) {
+                    publish.rotate();
+                    Commond.Response res = new Commond.Response();
+                    res.success = true;
+                    res.content = "视频旋转成功";
                     try {
                         responseQueue.put(res);
                     } catch (InterruptedException e) {

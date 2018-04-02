@@ -529,7 +529,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
     //旋转
     public void rotate() {
         if (isCameraBegin) {
-            Rotate3dAnimation.rotate3dDegrees180(publishView, 700, 500, Rotate3dAnimation.ROTATE_Y_AXIS);
+            if(publishView!=null)Rotate3dAnimation.rotate3dDegrees180(publishView, 700, 500, Rotate3dAnimation.ROTATE_Y_AXIS);
             facingFront = !rotate ? CameraCharacteristics.LENS_FACING_FRONT : CameraCharacteristics.LENS_FACING_BACK;
             releaseCamera();
             initCamera();
@@ -720,7 +720,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
         }
 
         public Buider setCenterScaleType(boolean isCenterScaleType) {
-            publishView.setCenterScaleType(isCenterScaleType);
+            if(publishView!=null)publishView.setCenterScaleType(isCenterScaleType);
             return this;
         }
 
