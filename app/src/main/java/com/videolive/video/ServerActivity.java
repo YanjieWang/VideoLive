@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.library.rpc.RpcSeverService;
+import com.library.wifidirect.WifiDirectService;
 import com.videolive.R;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 public class ServerActivity extends Activity {
 
     private Button start;
-
+    WifiDirectService wds;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +42,9 @@ public class ServerActivity extends Activity {
                 }
             }
         });
+
+        wds = new WifiDirectService();
+        wds.init(this);
     }
     private boolean isWorked(String className) {
         ActivityManager myManager = (ActivityManager) ServerActivity.this
@@ -55,5 +59,12 @@ public class ServerActivity extends Activity {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        wds.unInit(this);
+        wds = null;
     }
 }
