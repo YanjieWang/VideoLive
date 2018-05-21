@@ -53,7 +53,7 @@ public class SendReady extends AppCompatActivity {
     private Spinner sb_wifi_direct;
     private WifiP2pDevice[] mWifiP2pDeviceList;
     private RadioGroup rg_net_protical;
-
+    private EditText publishbitrate_pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class SendReady extends AppCompatActivity {
             finish();
             return;
         }
+        publishbitrate_pass=findViewById(R.id.publishbitrate_pass);
         rotate = findViewById(R.id.rotate);
         sb_preview = findViewById(R.id.sb_preview);
         rotate.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

@@ -12,7 +12,6 @@ public abstract class BaseSend {
     protected int PUBLISH_STATUS = PUBLISH_STATUS_STOP;
 
     protected UdpControlInterface udpControl = null;
-    protected String mPassword = null;
 
     public abstract void startsend();
 
@@ -30,11 +29,6 @@ public abstract class BaseSend {
 
     public int getPublishStatus() {
         return PUBLISH_STATUS;
-    }
-
-    public BaseSend setEncryptPassword(String password){
-        this.mPassword = password;
-        return this;
     }
 
 }

@@ -19,7 +19,6 @@ public abstract class BaseRecive {
     protected VideoCallback videoCallback = null;
     protected WeightCallback weightCallback;
     protected int packetMin = 3;
-    protected String mPassword = null;
 
     /**
      * 手动送入数据的方法
@@ -74,8 +73,4 @@ public abstract class BaseRecive {
         informaitonInterface.Information(important);
     }
 
-    public BaseRecive setDecryptPassword(String password){
-        this.mPassword = password;
-        return this;
-    }
 }

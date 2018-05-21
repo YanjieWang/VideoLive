@@ -3,6 +3,7 @@ package com.library.live.stream.tcp;
 
 import com.library.common.TcpBytes;
 import com.library.live.stream.BaseSend;
+import com.library.rpc.Config;
 import com.library.util.OtherUtil;
 import com.library.util.mLog;
 
@@ -153,8 +154,8 @@ public class TcpSend extends BaseSend {
                         try {
                             mLog.log("senderror", "发送数据");
                             //stream.writeObject(sendQueue.poll());
-                            if(mPassword != null) {
-                                stream.writeObject(sendQueue.take().encrypt(mPassword));
+                            if(Config.password_enc != null) {
+                                stream.writeObject(sendQueue.take().encrypt(Config.password_enc));
                             }else{
                                 stream.writeObject(sendQueue.take());
                             }

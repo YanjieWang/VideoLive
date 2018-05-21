@@ -24,29 +24,40 @@ public final class Config {
 
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PASSWORD_KEY = "password";
+
+    public static final String PASSWORD_ENC_DEFAULT = null;
+    public static final String PASSWORD_ENC_KEY= "password_enc";
+
+    //登录密码
     public static String password = PASSWORD_DEFAULT;//长度必须>6
+
+    //加解密密码
+    public static String password_enc = PASSWORD_ENC_DEFAULT;//长度必须>6
+
 
 
     public static Commond.Request conf = null;
 
 
-    public static void loadConfig(Context con) {
+    public static synchronized void loadConfig(Context con) {
         if (con != null && !isLoaded) {
             SharedPreferences sp = getCon(con);
             control_port = sp.getInt(CONTROL_PORT_KEY, CONTROL_PORT_DEFAULT);
             donwload_prot = sp.getInt(DOWNLOAD_PORT_KEY, DOWNLOAD_PORT_DEFAULT);
             password = sp.getString(PASSWORD_KEY, PASSWORD_DEFAULT);
+            password_enc = sp.getString(PASSWORD_ENC_KEY, null);
             isLoaded = true;
         }
     }
 
-    public static void saveConfig(Context con) {
+    public static synchronized void saveConfig(Context con) {
         if (con != null && isLoaded) {
             getCon(con)
                     .edit()
                     .putInt(CONTROL_PORT_KEY, control_port)
                     .putInt(DOWNLOAD_PORT_KEY, donwload_prot)
                     .putString(PASSWORD_KEY, password)
+                    .putString(PASSWORD_ENC_KEY, password_enc)
                     .commit();
         } else {
             if (!isLoaded) {
@@ -61,4 +72,5 @@ public final class Config {
     public static SharedPreferences getCon(Context con) {
         return con.getSharedPreferences("video_live_conf", Context.MODE_PRIVATE);
     }
+
 }

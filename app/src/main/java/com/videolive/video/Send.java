@@ -37,7 +37,6 @@ public class Send extends AppCompatActivity {
             bs = new UdpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
         }else{
             bs = new TcpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
-            //bs.setEncryptPassword("1234567890123456");
         }
         publish = new Publish.Buider(this, (PublishView) findViewById(R.id.publishView))
                 .setPushMode(bs)

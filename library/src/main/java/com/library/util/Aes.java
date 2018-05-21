@@ -18,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  */
 public class Aes {
+    private static final String TAG = "Aes";
 
     // 加密
     public static byte[] Encrypt(byte[] sSrc, int inputOffset, int inputLen,String sKey){
@@ -29,6 +30,7 @@ public class Aes {
         }
         // 判断Key是否为16位
         if (sKey.length() != 16) {
+            mLog.log(TAG,"加密失败，密码长度不是16位");
             return null;
         }
         try {
@@ -68,7 +70,7 @@ public class Aes {
         }
         // 判断Key是否为16位
         if (sKey.length() != 16) {
-            System.out.print("Key长度不是16位");
+            mLog.log(TAG,"解密失败，密码长度不是16位");
             return null;
         }
         try {

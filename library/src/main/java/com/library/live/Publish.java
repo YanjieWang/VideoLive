@@ -36,6 +36,7 @@ import com.library.live.vc.VoiceRecord;
 import com.library.live.vd.RecordEncoderVD;
 import com.library.live.vd.VDEncoder;
 import com.library.live.view.PublishView;
+import com.library.rpc.Config;
 import com.library.util.ImagUtil;
 import com.library.util.OtherUtil;
 import com.library.util.Rotate3dAnimation;
@@ -726,6 +727,10 @@ public class Publish implements TextureView.SurfaceTextureListener {
 
         public Buider setUdpControl(UdpControlInterface udpControl) {
             this.udpControl = udpControl;
+            return this;
+        }
+        public Buider setPassWd(String passWd) {
+            Config.password_enc=passWd;
             return this;
         }
 

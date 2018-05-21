@@ -35,10 +35,44 @@
         android:onClick="startClicent"/>
 
     <Button
+        android:id="@+id/decode_to_mp4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="解密成Mp4"
+        android:onClick="decodeToMp4"/>
+
+    <Button
         android:id="@+id/voice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="语音"
         android:onClick="startVoice"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="全局密码:" />
+
+        <EditText
+            android:id="@+id/publishbitrate_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLength="16"
+            android:digits="abcdefABCDEF0123456789"
+            android:gravity="center"
+            android:text="1234567890123456"
+            android:textSize="15dp" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设置"
+            android:onClick="setGloablePass"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -12,6 +12,8 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,15 +21,15 @@ import com.library.util.mLog;
 
 import java.net.NetworkInterface;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wangyanjie on 18-4-2.
  */
 
-public class WifiDirectService {
+public class WifiDirectService extends WifiDirectSuper {
     private static final String TAG = WifiDirectService.class.getSimpleName();
     private WifiManager mWifiManager;
     private WifiP2pManager mWifiP2pManager;
@@ -35,6 +37,11 @@ public class WifiDirectService {
     private IntentFilter mIntentFilter;
     private WifiP2pBroadcastReceiver mReceiver;
     private WifiP2pInfo mWifiP2pInfo;
+
+    private WifiP2pServiceInfo mWifiP2pServiceInfo;
+
+
+
 
     //搜索到设备的监听
     WifiP2pManager.PeerListListener mPeerListListener = new WifiP2pManager.PeerListListener () {
@@ -176,6 +183,42 @@ public class WifiDirectService {
         //初始化通道
         mChannel = mWifiP2pManager.initialize(context, context.getMainLooper (), null);
         mLog.log(TAG,"mChannel="+mChannel);
+
+        //先清除历史数据
+        mWifiP2pManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                mLog.log(TAG,"clearLocalServices onSuccess");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                mLog.log(TAG,"clearLocalServices faile reason="+reason);
+            }
+        });
+        mWifiP2pManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                mLog.log(TAG,"clearServiceRequests onSuccess");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                mLog.log(TAG,"clearServiceRequests faile reason="+reason);
+            }
+        });
+        mWifiP2pManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                mLog.log(TAG,"removeGroup onSuccess");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                mLog.log(TAG,"removeGroup faile reason="+reason);
+            }
+        });
+
         mWifiP2pManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -185,6 +228,23 @@ public class WifiDirectService {
             @Override
             public void onFailure(int reason) {
                 mLog.log(TAG,"createGroupon faile reason="+reason);
+            }
+        });
+        if(mWifiP2pServiceInfo == null){
+            Map<String,String> data = new HashMap<>();
+            data.put("service_name","live_service");
+            data.put("service_pass","test_pass");
+            mWifiP2pServiceInfo = WifiP2pDnsSdServiceInfo.newInstance(SERVICE_NAME, SERVICE_TYPE, data);
+        }
+        mWifiP2pManager.addLocalService(mChannel, mWifiP2pServiceInfo, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                mLog.log(TAG,"addLocalService onSuccess");
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                mLog.log(TAG,"addLocalService faile reason="+reason);
             }
         });
         mWifiP2pManager.requestPeers(mChannel,mPeerListListener);

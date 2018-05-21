@@ -2,6 +2,7 @@ package com.library.live.vd;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCrypto;
 import android.media.MediaFormat;
 import android.util.Size;
 
@@ -9,6 +10,7 @@ import com.library.live.file.WriteMp4;
 import com.library.util.ImagUtil;
 import com.library.util.OtherUtil;
 import com.library.util.SingleThreadExecutor;
+import com.library.util.mLog;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -98,12 +100,15 @@ public class RecordEncoderVD {
                         outputBufferIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, OtherUtil.waitTime);
 
                         if (MediaCodec.INFO_OUTPUT_FORMAT_CHANGED == outputBufferIndex) {
+                            //sps pps信息
                             writeMp4.addTrack(mediaCodec.getOutputFormat(), WriteMp4.video);
+                            mLog.log("wyj","aaaaaaa bufferInfo.flags=" +bufferInfo.flags);
+
                         }
                         while (outputBufferIndex >= 0) {
                             //写文件
                             writeMp4.write(WriteMp4.video, mediaCodec.getOutputBuffer(outputBufferIndex), bufferInfo);
-
+                            mLog.log("wyj","aaaaaaa11 bufferInfo.flags=" +bufferInfo.flags);
                             mediaCodec.releaseOutputBuffer(outputBufferIndex, false);
                             outputBufferIndex = mediaCodec.dequeueOutputBuffer(bufferInfo, OtherUtil.waitTime);
                         }

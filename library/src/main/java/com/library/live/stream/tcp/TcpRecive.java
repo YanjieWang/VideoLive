@@ -3,6 +3,7 @@ package com.library.live.stream.tcp;
 import com.library.common.TcpBytes;
 import com.library.live.stream.BaseRecive;
 import com.library.live.stream.IsInBuffer;
+import com.library.rpc.Config;
 import com.library.util.mLog;
 
 import java.io.IOException;
@@ -88,8 +89,8 @@ public class TcpRecive extends BaseRecive implements CachingStrategyCallback {
 
                         try {
                             TcpBytes tcpBytes = (TcpBytes)ois.readObject();
-                            if(mPassword != null) {
-                                write(tcpBytes.decrypt(mPassword));
+                            if(Config.password_enc != null) {
+                                write(tcpBytes.decrypt(Config.password_enc));
                             }else{
                                 write(tcpBytes);
                             }
