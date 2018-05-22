@@ -85,4 +85,5 @@ public class VoiceRecord {
     public void stopRecode() {
         recordEncoderVC.stopRecode();
     }
+
 }

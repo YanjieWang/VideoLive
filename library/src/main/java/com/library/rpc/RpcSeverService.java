@@ -38,8 +38,9 @@ public class RpcSeverService extends Service {
     private ObjectOutputStream mObjectOutputStream = null;
     private ServerSocket serverSocket;
     private Socket socket = null;
-    private PublishView pv;
     private Publish publish;
+
+    private String pushIp;
 
     @Nullable
     @Override
@@ -52,31 +53,6 @@ public class RpcSeverService extends Service {
             Config.loadConfig(this);
         }
         super.onCreate();
-        View mView = LayoutInflater.from(this).inflate(R.layout.sevice_publish_view,
-                null);
-        //pv = mView.findViewById(R.id.publish_view);
-
-        BaseSend bs = new UdpSend("192.168.49.1", 8765);
-
-        publish = new Publish.Buider(this, pv)
-                .setPushMode(bs)
-                .setFrameRate(15)
-                .setVideoCode(VDEncoder.H265)
-                .setIsPreview(false)
-                .setPublishBitrate(2000*1024)
-                .setCollectionBitrate(2000*1024)
-                .setCollectionBitrateVC(64*1024)
-                .setPublishBitrateVC(24*1024)
-                .setPublishSize(1920,1080)
-                .setPreviewSize(1920,1080)
-                .setCollectionSize(1920,1080)
-                .setRotate(false)
-                .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
-                .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
-                .setCenterScaleType(true)
-                .setScreenshotsMode(Publish.TAKEPHOTO)
-                .build();
-        publish.start();
     }
 
     @Override
@@ -112,6 +88,55 @@ public class RpcSeverService extends Service {
                                 mObjectInputStream = new ObjectInputStream(socket.getInputStream());
                                 mObjectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                                 mLog.log(TAG, "连接成功");
+                                if(publish == null){
+                                    pushIp = socket.getInetAddress().getHostAddress();
+                                    BaseSend bs = new UdpSend(pushIp, Config.push_prot);
+                                    publish = new Publish.Buider(RpcSeverService.this, null)
+                                            .setPushMode(bs)
+                                            .setFrameRate(15)
+                                            .setVideoCode(VDEncoder.H264)
+                                            .setIsPreview(false)
+                                            .setPublishBitrate(2000*1024)
+                                            .setCollectionBitrate(2000*1024)
+                                            .setCollectionBitrateVC(64*1024)
+                                            .setPublishBitrateVC(24*1024)
+                                            .setPublishSize(1920,1080)
+                                            .setPreviewSize(1920,1080)
+                                            .setCollectionSize(1920,1080)
+                                            .setRotate(false)
+                                            .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
+                                            .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
+                                            .setCenterScaleType(true)
+                                            .setScreenshotsMode(Publish.TAKEPHOTO)
+                                            .build();
+                                } else {
+                                    String pushIpNew = socket.getInetAddress().getHostAddress();
+                                    if(!pushIp.equals(pushIpNew)){
+                                        publish.stop();
+                                        publish.stopRecode();
+                                        publish.destroy();
+                                        pushIp = pushIpNew;
+                                        BaseSend bs = new UdpSend(pushIp, Config.push_prot);
+                                        publish = new Publish.Buider(RpcSeverService.this, null)
+                                                .setPushMode(bs)
+                                                .setFrameRate(15)
+                                                .setVideoCode(VDEncoder.H264)
+                                                .setIsPreview(false)
+                                                .setPublishBitrate(2000*1024)
+                                                .setCollectionBitrate(2000*1024)
+                                                .setCollectionBitrateVC(64*1024)
+                                                .setPublishBitrateVC(24*1024)
+                                                .setPublishSize(1920,1080)
+                                                .setPreviewSize(1920,1080)
+                                                .setCollectionSize(1920,1080)
+                                                .setRotate(false)
+                                                .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
+                                                .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
+                                                .setCenterScaleType(true)
+                                                .setScreenshotsMode(Publish.TAKEPHOTO)
+                                                .build();
+                                    }
+                                }
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 mObjectInputStream = null;
@@ -156,6 +181,9 @@ public class RpcSeverService extends Service {
                     e.printStackTrace();
                     mLog.log(TAG, "服务初始化失败 端口=" + Config.control_port);
                 }
+            }
+            if(publish != null){
+                publish.stop();
             }
             mLog.log(TAG, "接收线程 已停止");
 
@@ -265,8 +293,10 @@ public class RpcSeverService extends Service {
             mCommendSendThread.stopThread();
             mCommendSendThread = null;
         }
-        publish.stop();
-        publish.destroy();
+        if(publish!=null){
+            publish.stop();
+            publish.destroy();
+        }
     }
 
 }

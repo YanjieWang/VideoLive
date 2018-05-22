@@ -89,7 +89,7 @@ public class WifiDirectService extends WifiDirectSuper {
             mWifiP2pInfo = wifiP2pInfo;
             mLog.log (TAG, "onConnectionInfoAvailable: 是否为新群："+mWifiP2pInfo.groupFormed);
             mLog.log (TAG, "onConnectionInfoAvailable: 是否为群主："+mWifiP2pInfo.isGroupOwner);
-            mLog.log (TAG, "onConnectionInfoAvailable: 群主ip："+mWifiP2pInfo.groupOwnerAddress.getHostAddress());
+            mLog.log (TAG, "onConnectionInfoAvailable: 群主ip："+((mWifiP2pInfo.groupOwnerAddress == null)?null:mWifiP2pInfo.groupOwnerAddress.getHostAddress()));
 
             if(wifiP2pInfo.isGroupOwner && wifiP2pInfo.groupFormed){//接收端，即群主
                 //mLog.log (TAG, "onConnectionInfoAvailable: 接收端"+mWifiP2pInfo);

@@ -43,6 +43,9 @@ public class WifiDirectClicent extends WifiDirectSuper{
     private WifiP2pServiceInfo mWifiP2pServiceInfo;
     private WifiP2pServiceRequest mWifiP2pServiceRequest;
 
+    private WifiP2pManager.DnsSdTxtRecordListener txtListener;
+    private WifiP2pManager.DnsSdServiceResponseListener servListener;
+
 
 
     //搜索到设备的监听
@@ -99,7 +102,7 @@ public class WifiDirectClicent extends WifiDirectSuper{
             mWifiP2pInfo = wifiP2pInfo;
             mLog.log (TAG, "onConnectionInfoAvailable: 是否为新群："+mWifiP2pInfo.groupFormed);
             mLog.log (TAG, "onConnectionInfoAvailable: 是否为群主："+mWifiP2pInfo.isGroupOwner);
-            mLog.log (TAG, "onConnectionInfoAvailable: 群主ip："+mWifiP2pInfo.groupOwnerAddress.getHostAddress());
+            mLog.log (TAG, "onConnectionInfoAvailable: 群主ip："+mWifiP2pInfo.groupOwnerAddress);
 
             if(wifiP2pInfo.isGroupOwner && wifiP2pInfo.groupFormed){//接收端，即群主
                 //mLog.log (TAG, "onConnectionInfoAvailable: 接收端"+mWifiP2pInfo);
@@ -161,7 +164,7 @@ public class WifiDirectClicent extends WifiDirectSuper{
         initIntentFilter();
         initWifiP2P(context);
         initReceiver(context);
-        discoverDevice();
+        discoverServices();
     }
 
     public void unInit(Context context){
@@ -247,16 +250,47 @@ public class WifiDirectClicent extends WifiDirectSuper{
             mWifiP2pServiceInfo = WifiP2pDnsSdServiceInfo.newInstance("WifiDirectService", "main", data);
         }
         if(mWifiP2pServiceRequest==null){
-            Map<String,String> data = new HashMap<>();
-            data.put("service_name","live_service");
-            data.put("service_pass","test_pass");
             mWifiP2pServiceRequest = WifiP2pDnsSdServiceRequest.newInstance(SERVICE_NAME, SERVICE_TYPE);
         }
+        if(txtListener==null){
+            txtListener = new WifiP2pManager.DnsSdTxtRecordListener() {
+                @Override
+                /* Callback includes:
+                 * fullDomain: full domain name: e.g "printer._ipp._tcp.local."
+                 * record: TXT record dta as a map of key/value pairs.
+                 * device: The device running the advertised service.
+                 */
+
+                public void onDnsSdTxtRecordAvailable(
+                        String fullDomain, Map record, WifiP2pDevice device) {
+                    Log.d(TAG, "DnsSdTxtRecord available -" + record.toString());
+                    if(record!=null
+                            &&"live_service".equals(record.get("service_name"))
+                            && "test_pass".equals(record.get("service_pass"))){
+                        if(device!=null){
+                            connect(device);
+                        }
+                    }
+                }
+            };
+        }
+        servListener = new WifiP2pManager.DnsSdServiceResponseListener() {
+            @Override
+            public void onDnsSdServiceAvailable(String instanceName, String registrationType,
+                                                WifiP2pDevice resourceType) {
+
+                // Update the device name with the human-friendly version from
+                // the DnsTxtRecord, assuming one arrived.
+                Log.d(TAG, "onBonjourServiceAvailable " + instanceName);
+            }
+        };
+
+
+        mWifiP2pManager.setDnsSdResponseListeners(mChannel, servListener, txtListener);
         mWifiP2pManager.addServiceRequest(mChannel, mWifiP2pServiceRequest, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
                 mLog.log(TAG,"addServiceRequest onSuccess");
-
             }
 
             @Override
@@ -264,6 +298,7 @@ public class WifiDirectClicent extends WifiDirectSuper{
                 mLog.log(TAG,"addServiceRequest faile reason="+reason);
             }
         });
+
         mWifiP2pManager.requestPeers(mChannel,mPeerListListener);
         mWifiP2pManager.requestGroupInfo(mChannel,mGroupInfoListener);
     }
@@ -288,13 +323,27 @@ public class WifiDirectClicent extends WifiDirectSuper{
 
 
     //搜索设备
-    private void discoverDevice() {
+    private void discoverServices() {
         /**
          * 开始搜索
          * ActionListener，该监听只监听discoverPeers方法是否调用成功
          */
 
-        mWifiP2pManager.discoverPeers (mChannel,mActionListener );
+        mWifiP2pManager.discoverServices(mChannel, new WifiP2pManager.ActionListener() {
+
+                @Override
+                public void onSuccess() {
+                    // Success!
+                }
+
+                @Override
+                public void onFailure(int code) {
+                    // Command failed.  Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                    if (code == WifiP2pManager.P2P_UNSUPPORTED) {
+                        Log.d(TAG, "P2P isn't supported on this device.");
+                    }
+                }
+        });
     }
 
     //建立连接
@@ -306,7 +355,7 @@ public class WifiDirectClicent extends WifiDirectSuper{
         //将设备地址设置到配置对象中
         config.deviceAddress = wifiP2pDevice.deviceAddress;
         //连接
-        mWifiP2pManager.connect (mChannel, config, mConnectActionListener);
+        if(mWifiP2pManager!=null)mWifiP2pManager.connect (mChannel, config, mConnectActionListener);
     }
 
 

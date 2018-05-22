@@ -789,4 +789,5 @@ public class Publish implements TextureView.SurfaceTextureListener {
                 ", pictureRunnable=" + pictureRunnable +
                 '}';
     }
+
 }

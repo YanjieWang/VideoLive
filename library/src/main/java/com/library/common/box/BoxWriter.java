@@ -101,7 +101,7 @@ public class BoxWriter extends Box {
     /*
     从流中读取数据
     格式byte[0-3] 长度，假设转成int length
-    byte[4] 帧类型 0，视频 1 音频 2，视频信息 3.音频信息
+    byte[4] 帧类型 0，视频 1 音频 10，视频信息 11.音频信息
     byte[5-12] 时间戳 long型 8字节
     byte[13-16] 帧flag
     byte[17-(length+17-1)] 数据部分为明文或null
@@ -127,6 +127,7 @@ public class BoxWriter extends Box {
                 }
                 length = data.length;
             }
+            mLog.log(TAG,"写入数据:length"+length+",frameType="+frameType+",time="+time+",flag="+flag);
             os.write(intToByteArray(length));
             os.write(frameType);
             os.write(longToBytes(time));

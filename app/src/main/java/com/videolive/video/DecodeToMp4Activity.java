@@ -185,18 +185,15 @@ public class DecodeToMp4Activity extends SuperActivity {
                 wmp4.start();
                 MediaFormat videoMediaFormat = MediaFormat.createVideoFormat(MediaFormat.MIMETYPE_VIDEO_AVC, 0, 0);
                 MediaFormat audioMediaFormat = MediaFormat.createAudioFormat(MediaFormat.MIMETYPE_AUDIO_AAC, OtherUtil.samplerate,2);
-                byte[] data = new byte[]{(byte) 0x12, (byte) 0x10};
-                audioMediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(data));
-                wmp4.addTrack(audioMediaFormat, WriteMp4.voice);
-
-
+                //byte[] data = new byte[]{(byte) 0x12, (byte) 0x10};
+                //audioMediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(data));
+                //wmp4.addTrack(audioMediaFormat, WriteMp4.voice);
                 BoxReader br = new BoxReader();
                 final boolean success = br.start(inFile);
                 if(success){
                     mLog.log(TAG,"BoxReader start success");
                     Box.Frame fr = br.readData();
                     while(fr != null){
-                        fr = br.readData();
                         if(fr!=null) {
                             ByteBuffer bb = ByteBuffer.allocate(fr.data.length);
                             bb.clear();
@@ -211,9 +208,11 @@ public class DecodeToMp4Activity extends SuperActivity {
                                 videoMediaFormat.setByteBuffer("csd-1", Box.getH264PPS(fr.data));
                                 wmp4.addTrack(videoMediaFormat,WriteMp4.video);
                             }else if (fr.tag==Box.TAG_AUDIO_INFO){
+                                audioMediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(fr.data));
                                 wmp4.addTrack(audioMediaFormat,WriteMp4.voice);
                             }
                         }
+                        fr = br.readData();
                     }
 
                 } else {
@@ -230,6 +229,7 @@ public class DecodeToMp4Activity extends SuperActivity {
                         }
                         if(success){
                             toast("解密成功");
+                            refreshList(parrentDir);
                         }else{
                             toast("解密失败");
                         }

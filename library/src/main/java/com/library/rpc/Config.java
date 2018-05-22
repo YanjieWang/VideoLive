@@ -21,6 +21,10 @@ public final class Config {
     public static final String DOWNLOAD_PORT_KEY = "donwload_port";
     public static int donwload_prot = DOWNLOAD_PORT_DEFAULT;
 
+    public static final int PUSH_PORT_DEFAULT = 8765;
+    public static final String PUSH_PORT_KEY = "push_port";
+    public static int push_prot = PUSH_PORT_DEFAULT;
+
 
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PASSWORD_KEY = "password";
@@ -39,13 +43,13 @@ public final class Config {
     public static Commond.Request conf = null;
 
 
-    public static synchronized void loadConfig(Context con) {
-        if (con != null && !isLoaded) {
+    public static synchronized void loadConfig(Context con) { if (con != null && !isLoaded) {
             SharedPreferences sp = getCon(con);
             control_port = sp.getInt(CONTROL_PORT_KEY, CONTROL_PORT_DEFAULT);
             donwload_prot = sp.getInt(DOWNLOAD_PORT_KEY, DOWNLOAD_PORT_DEFAULT);
             password = sp.getString(PASSWORD_KEY, PASSWORD_DEFAULT);
             password_enc = sp.getString(PASSWORD_ENC_KEY, null);
+            push_prot = sp.getInt(PUSH_PORT_KEY, PUSH_PORT_DEFAULT);
             isLoaded = true;
         }
     }
@@ -58,6 +62,7 @@ public final class Config {
                     .putInt(DOWNLOAD_PORT_KEY, donwload_prot)
                     .putString(PASSWORD_KEY, password)
                     .putString(PASSWORD_ENC_KEY, password_enc)
+                    .putInt(PUSH_PORT_KEY, push_prot)
                     .commit();
         } else {
             if (!isLoaded) {

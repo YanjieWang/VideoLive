@@ -18,6 +18,7 @@ import com.library.live.view.PlayerView;
 import com.library.rpc.Commond;
 import com.library.rpc.Config;
 import com.library.rpc.RpcClicent;
+import com.library.wifidirect.WifiDirectClicent;
 import com.videolive.R;
 
 /**
@@ -39,6 +40,8 @@ public class ClientActivity extends Activity {
     private Toast toast = null;
     private PlayerView playerView;
     private Player player;
+    private WifiDirectClicent wdc;
+
     private RpcClicent.ConnectStateChangeListener cscl = new RpcClicent.ConnectStateChangeListener() {
         @Override
         public void onConnected() {
@@ -62,6 +65,8 @@ public class ClientActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wdc = new WifiDirectClicent();
+        wdc.init(getApplicationContext());
         clicent = RpcClicent.getInstance();
         setContentView(R.layout.activity_clicent);
         connect = findViewById(R.id.connect);
@@ -74,7 +79,7 @@ public class ClientActivity extends Activity {
                 if(connect.getText().toString().equals("连接服务端")){
                     connect.setText("正在连接");
                     connect.setEnabled(false);
-                    clicent.startRpc("192.168.49.38", Config.control_port, han, cscl);
+                    clicent.startRpc("192.168.49.1", Config.control_port, han, cscl);
                 } else if (connect.getText().toString().equals("断开连接")){
                     connect.setText("正在断开连接");
                     connect.setEnabled(false);
@@ -160,10 +165,10 @@ public class ClientActivity extends Activity {
 
         player = new Player.Buider(playerView)
                 .setPullMode(br)
-                .setVideoCode(VDDecoder.H265)
+                .setVideoCode(VDDecoder.H264)
                 .setMultiple(1)
                 .setCenterScaleType(true)
-                .setVideoPath("/sdcard")
+                .setVideoPath("/sdcard/VideoLive")
                 .build();
         player.start();
     }
@@ -180,6 +185,10 @@ public class ClientActivity extends Activity {
         player.stop();
         player.destroy();
         player = null;
+        if(wdc!=null){
+            wdc.unInit(getApplicationContext());
+            wdc=null;
+        }
     }
 
     private void toast(String str){

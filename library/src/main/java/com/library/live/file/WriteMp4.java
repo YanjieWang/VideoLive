@@ -30,7 +30,7 @@ public class WriteMp4 {
     public static final int RECODE_STATUS_START = 0;
     public static final int RECODE_STATUS_STOP = 1;
     public static final int RECODE_STATUS_READY = 2;
-    private int RECODE_STATUS = RECODE_STATUS_STOP;
+    public int RECODE_STATUS = RECODE_STATUS_STOP;
 
     private MediaMuxer mMediaMuxer = null;
     public static final int video = 0;
@@ -68,12 +68,14 @@ public class WriteMp4 {
         if (!TextUtils.isEmpty(dirpath) && !dirpath.equals("")) {
             this.dirpath = dirpath;
         }
-        saveStream = saveStream;
+        this.saveStream = saveStream;
     }
 
     public void addTrack(MediaFormat mediaFormat, int flag) {
         mLog.log(TAG,"addTrack flag ="+flag);
         mLog.log(TAG,"addTrack mediaFormat ="+mediaFormat);
+        mLog.log(TAG,"addTrack mediaFormat ="+mediaFormat.getByteBuffer("csd-0").array().toString());
+
         if (flag == video) {
             videoFormat = mediaFormat;
         } else if (flag == voice) {
@@ -123,7 +125,7 @@ public class WriteMp4 {
         }
     }
 
-    public void     write(int flag, ByteBuffer outputBuffer, MediaCodec.BufferInfo bufferInfo) {
+    public void write(int flag, ByteBuffer outputBuffer, MediaCodec.BufferInfo bufferInfo) {
         mLog.log(TAG,"RECODE_STATUS="+RECODE_STATUS+",flag="+flag);
         if (RECODE_STATUS == RECODE_STATUS_START) {
             if(!saveStream) {
