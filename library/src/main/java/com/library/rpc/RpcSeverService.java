@@ -16,6 +16,7 @@ import com.library.live.stream.upd.UdpSend;
 import com.library.live.vd.VDEncoder;
 import com.library.live.view.PublishView;
 import com.library.util.mLog;
+import com.library.wifidirect.WifiDirectService1;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,8 @@ public class RpcSeverService extends Service {
 
     private String pushIp;
 
+    private WifiDirectService1 wds;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -49,6 +52,8 @@ public class RpcSeverService extends Service {
     }
     @Override
     public void onCreate() {
+        wds = new WifiDirectService1();
+        wds.init(this);
         if(!Config.isLoaded) {
             Config.loadConfig(this);
         }
@@ -297,6 +302,8 @@ public class RpcSeverService extends Service {
             publish.stop();
             publish.destroy();
         }
+        wds.unInit(this);
+        wds = null;
     }
 
 }

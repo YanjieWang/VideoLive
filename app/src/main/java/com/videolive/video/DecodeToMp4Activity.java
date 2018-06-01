@@ -152,19 +152,21 @@ public class DecodeToMp4Activity extends SuperActivity {
         }else{
             list.clear();
         }
-        File[] fs = parrentFile.listFiles();
-        for (int i = 0; i < fs.length; i++) {
-            String name = fs[i].getName();
-            if(fs[i].isDirectory()||name.toLowerCase().endsWith(".stream")||name.toLowerCase().endsWith(".mp4"))
-            list.add(name);
-        }
-        if(adapter==null){
-            //为适配器添加数据源
-            adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        if(parrentFile.exists()) {
+            File[] fs = parrentFile.listFiles();
+            for (int i = 0; i < fs.length; i++) {
+                String name = fs[i].getName();
+                if (fs[i].isDirectory() || name.toLowerCase().endsWith(".stream") || name.toLowerCase().endsWith(".mp4"))
+                    list.add(name);
+            }
+            if (adapter == null) {
+                //为适配器添加数据源
+                adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
 //为listView的容器添加适配器
-            lv.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
+                lv.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
         }
 
     }

@@ -1,8 +1,12 @@
 package com.library.rpc;
 
+import android.content.Context;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Handler;
 
 import com.library.util.mLog;
+import com.library.wifidirect.WifiDirectClicent1;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,7 +15,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class RpcClicent {
+public class RpcClicent implements WifiDirectClicent1.OnConnectedListener {
 
     private static RpcClicent instance = new RpcClicent();
 
@@ -33,27 +37,24 @@ public class RpcClicent {
 
     private ConnectStateChangeListener cscl;
 
+    private WifiDirectClicent1 wdc;
+    private Handler handler;
+
 
     public static RpcClicent getInstance() {
         return instance;
     }
 
-    public void startRpc(String ip, int port, Handler handler, ConnectStateChangeListener cscl) {
+    public void startRpc(Handler handler, ConnectStateChangeListener cscl,Context context) {
+        this.handler = handler;
         this.cscl = cscl;
-
+        mLog.log(TAG, "startRpc this.handler="+this.handler);
+        mLog.log(TAG, "startRpc handler="+handler);
+        if(wdc == null){
+            wdc = new WifiDirectClicent1(this);
+            wdc.init(context);
+        }
         mLog.log(TAG, "start");
-        if (address == null || !address.getAddress().getHostAddress().equals(ip) || address.getPort() != port) {
-            address = new InetSocketAddress(ip, port);
-            mLog.log(TAG, "updata address to：" + address);
-            stopRpc();
-        }
-        started = true;
-        if (mCommendReciveThread == null || !mCommendReciveThread.isRun) {
-            mCommendSendThread = new CommendSendThread();
-            mCommendReciveThread = new CommendReciveThread(handler);
-            mCommendSendThread.start();
-            mCommendReciveThread.start();
-        }
     }
 
     public boolean sendRequest(Commond.Request.RequestBase requestBase) {
@@ -74,7 +75,7 @@ public class RpcClicent {
     }
 
 
-    public void stopRpc() {
+    private void stopRpc(boolean destoryHandler) {
         mLog.log(TAG, "stop");
         started = false;
         if (mCommendReciveThread != null) {
@@ -84,6 +85,43 @@ public class RpcClicent {
         if (mCommendSendThread != null) {
             mCommendSendThread.stopThread();
             mCommendSendThread = null;
+        }
+
+        if(destoryHandler){
+            if(wdc != null){
+                wdc.unInit();
+                wdc = null;
+            }
+            if(cscl!=null){
+                cscl.onDisConnected();
+            }
+            handler = null;
+        }
+    }
+    public void stopRpc(){
+        stopRpc(true);
+    }
+
+    @Override
+    public void onDisconnected(){
+        //stopRpc(true);
+    }
+    @Override
+    public void onConnected( String ip) {
+        mLog.log(TAG, "进入回调：ip=" + ip);
+        if (address == null || !address.getAddress().getHostAddress().equals(ip) || address.getPort() != Config.control_port) {
+            address = new InetSocketAddress(ip, Config.control_port);
+            mLog.log(TAG, "updata address to：" + address);
+            stopRpc(false);
+        }
+        started = true;
+        if (mCommendReciveThread == null || !mCommendReciveThread.isRun) {
+            mLog.log(TAG, "onConnected this.handler="+this.handler);
+            mLog.log(TAG, "onConnected handler="+handler);
+            mCommendSendThread = new CommendSendThread();
+            mCommendReciveThread = new CommendReciveThread(handler);
+            mCommendSendThread.start();
+            mCommendReciveThread.start();
         }
     }
 
@@ -114,6 +152,8 @@ public class RpcClicent {
                             mLog.log(TAG, "创建ObjectOutputStream");
                             mObjectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                             mLog.log(TAG, "创建ObjectOutputStream完成");
+                            mLog.log(TAG, "callbackHandler="+callbackHandler);
+                            mLog.log(TAG, "cscl="+cscl);
                             isConnected = true;
                             if (callbackHandler != null) {
                                 callbackHandler.post(new Runnable() {

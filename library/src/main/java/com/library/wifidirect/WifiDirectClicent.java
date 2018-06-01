@@ -31,7 +31,7 @@ import java.util.Map;
  * Created by wangyanjie on 18-4-2.
  */
 
-public class WifiDirectClicent extends WifiDirectSuper{
+public class WifiDirectClicent extends WifiDirectSuper {
     private static final String TAG = WifiDirectClicent.class.getSimpleName();
     private WifiManager mWifiManager;
     private WifiP2pManager mWifiP2pManager;
@@ -173,6 +173,17 @@ public class WifiDirectClicent extends WifiDirectSuper{
         mIntentFilter = null;
         mWifiP2pManager.stopPeerDiscovery(mChannel,mActionListener);
         mWifiP2pManager.cancelConnect(mChannel,mConnectActionListener);
+        mWifiP2pManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
         mChannel = null;
         mWifiP2pManager = null;
     }
@@ -197,18 +208,6 @@ public class WifiDirectClicent extends WifiDirectSuper{
         mChannel = mWifiP2pManager.initialize(context, context.getMainLooper (), null);
         mLog.log(TAG,"mChannel="+mChannel);
 
-        //先清除历史数据
-        mWifiP2pManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                mLog.log(TAG,"clearLocalServices onSuccess");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                mLog.log(TAG,"clearLocalServices faile reason="+reason);
-            }
-        });
         mWifiP2pManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -220,29 +219,7 @@ public class WifiDirectClicent extends WifiDirectSuper{
                 mLog.log(TAG,"clearServiceRequests faile reason="+reason);
             }
         });
-        mWifiP2pManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                mLog.log(TAG,"removeGroup onSuccess");
-            }
 
-            @Override
-            public void onFailure(int reason) {
-                mLog.log(TAG,"removeGroup faile reason="+reason);
-            }
-        });
-
-        mWifiP2pManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                mLog.log(TAG,"createGroup onSuccess");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                mLog.log(TAG,"createGroupon faile reason="+reason);
-            }
-        });
         if(mWifiP2pServiceInfo==null){
             Map<String,String> data = new HashMap<>();
             data.put("service_name","live_service");
@@ -263,11 +240,13 @@ public class WifiDirectClicent extends WifiDirectSuper{
 
                 public void onDnsSdTxtRecordAvailable(
                         String fullDomain, Map record, WifiP2pDevice device) {
-                    Log.d(TAG, "DnsSdTxtRecord available -" + record.toString());
+                    Log.d(TAG, "DnsSdTxtRecord available -record=" + record);
+                    Log.d(TAG, "DnsSdTxtRecord available -device=" + device);
                     if(record!=null
                             &&"live_service".equals(record.get("service_name"))
                             && "test_pass".equals(record.get("service_pass"))){
                         if(device!=null){
+                            Log.d(TAG, "DnsSdTxtRecord available -connect device=" + device);
                             connect(device);
                         }
                     }
@@ -298,7 +277,6 @@ public class WifiDirectClicent extends WifiDirectSuper{
                 mLog.log(TAG,"addServiceRequest faile reason="+reason);
             }
         });
-
         mWifiP2pManager.requestPeers(mChannel,mPeerListListener);
         mWifiP2pManager.requestGroupInfo(mChannel,mGroupInfoListener);
     }
@@ -334,11 +312,13 @@ public class WifiDirectClicent extends WifiDirectSuper{
                 @Override
                 public void onSuccess() {
                     // Success!
+                    Log.d(TAG, "discoverServices:success");
                 }
 
                 @Override
                 public void onFailure(int code) {
                     // Command failed.  Check for P2P_UNSUPPORTED, ERROR, or BUSY
+                    Log.d(TAG, "discoverServices:fail code="+code);
                     if (code == WifiP2pManager.P2P_UNSUPPORTED) {
                         Log.d(TAG, "P2P isn't supported on this device.");
                     }

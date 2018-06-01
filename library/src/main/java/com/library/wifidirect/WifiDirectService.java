@@ -105,26 +105,15 @@ public class WifiDirectService extends WifiDirectSuper {
     WifiP2pManager.ActionListener mActionListener = new WifiP2pManager.ActionListener () {
         @Override
         public void onSuccess () {
-            mLog.log(TAG,"开始搜索 wifidirect 搜索");
+            mLog.log(TAG,"开始搜索 wifidirect 服务");
         }
 
         @Override
         public void onFailure (int i) {
-            mLog.log(TAG,"开始搜索 wifidirect 搜索 失败");
+            mLog.log(TAG,"开始搜索 wifidirect 服务 失败 code="+i);
         }
     };
 
-    WifiP2pManager.ActionListener mConnectActionListener = new WifiP2pManager.ActionListener () {
-        @Override
-        public void onSuccess () {
-            mLog.log(TAG,"开始连接 peer");
-        }
-
-        @Override
-        public void onFailure (int i) {
-            mLog.log(TAG,"开始连接peer失败");
-        }
-    };
 
     WifiP2pManager.GroupInfoListener mGroupInfoListener = new WifiP2pManager.GroupInfoListener(){
 
@@ -151,7 +140,7 @@ public class WifiDirectService extends WifiDirectSuper {
         initIntentFilter();
         initWifiP2P(context);
         initReceiver(context);
-        discoverDevice();
+        discoverService();
     }
 
     public void unInit(Context context){
@@ -159,7 +148,17 @@ public class WifiDirectService extends WifiDirectSuper {
         mReceiver = null;
         mIntentFilter = null;
         mWifiP2pManager.stopPeerDiscovery(mChannel,mActionListener);
-        mWifiP2pManager.cancelConnect(mChannel,mConnectActionListener);
+        mWifiP2pManager.clearLocalServices(mChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+
+            }
+        });
         mChannel = null;
         mWifiP2pManager = null;
     }
@@ -196,17 +195,7 @@ public class WifiDirectService extends WifiDirectSuper {
                 mLog.log(TAG,"clearLocalServices faile reason="+reason);
             }
         });
-        mWifiP2pManager.clearServiceRequests(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                mLog.log(TAG,"clearServiceRequests onSuccess");
-            }
 
-            @Override
-            public void onFailure(int reason) {
-                mLog.log(TAG,"clearServiceRequests faile reason="+reason);
-            }
-        });
         mWifiP2pManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -271,25 +260,12 @@ public class WifiDirectService extends WifiDirectSuper {
 
 
     //搜索设备
-    private void discoverDevice() {
+    private void discoverService() {
         /**
          * 开始搜索
          * ActionListener，该监听只监听discoverPeers方法是否调用成功
          */
-
-        mWifiP2pManager.discoverPeers (mChannel,mActionListener );
-    }
-
-    //建立连接
-    private void connect (WifiP2pDevice wifiP2pDevice) {
-        mLog.log(TAG,wifiP2pDevice.deviceName);
-        //创建wifip2p配置对象
-        WifiP2pConfig config = new WifiP2pConfig ();
-        config.groupOwnerIntent = 15;
-        //将设备地址设置到配置对象中
-        config.deviceAddress = wifiP2pDevice.deviceAddress;
-        //连接
-        mWifiP2pManager.connect (mChannel, config, mConnectActionListener);
+        mWifiP2pManager.discoverServices(mChannel,mActionListener);
     }
 
 

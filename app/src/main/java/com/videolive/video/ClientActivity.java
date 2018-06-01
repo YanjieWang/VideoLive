@@ -19,6 +19,7 @@ import com.library.rpc.Commond;
 import com.library.rpc.Config;
 import com.library.rpc.RpcClicent;
 import com.library.wifidirect.WifiDirectClicent;
+import com.library.wifidirect.WifiDirectClicent1;
 import com.videolive.R;
 
 /**
@@ -40,7 +41,6 @@ public class ClientActivity extends Activity {
     private Toast toast = null;
     private PlayerView playerView;
     private Player player;
-    private WifiDirectClicent wdc;
 
     private RpcClicent.ConnectStateChangeListener cscl = new RpcClicent.ConnectStateChangeListener() {
         @Override
@@ -65,8 +65,6 @@ public class ClientActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wdc = new WifiDirectClicent();
-        wdc.init(getApplicationContext());
         clicent = RpcClicent.getInstance();
         setContentView(R.layout.activity_clicent);
         connect = findViewById(R.id.connect);
@@ -79,7 +77,7 @@ public class ClientActivity extends Activity {
                 if(connect.getText().toString().equals("连接服务端")){
                     connect.setText("正在连接");
                     connect.setEnabled(false);
-                    clicent.startRpc("192.168.49.1", Config.control_port, han, cscl);
+                    clicent.startRpc(han, cscl,ClientActivity.this);
                 } else if (connect.getText().toString().equals("断开连接")){
                     connect.setText("正在断开连接");
                     connect.setEnabled(false);
@@ -185,10 +183,6 @@ public class ClientActivity extends Activity {
         player.stop();
         player.destroy();
         player = null;
-        if(wdc!=null){
-            wdc.unInit(getApplicationContext());
-            wdc=null;
-        }
     }
 
     private void toast(String str){
