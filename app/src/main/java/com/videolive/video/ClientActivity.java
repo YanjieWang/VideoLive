@@ -11,15 +11,11 @@ import android.widget.Toast;
 
 import com.library.live.Player;
 import com.library.live.stream.BaseRecive;
-import com.library.live.stream.tcp.TcpRecive;
 import com.library.live.stream.upd.UdpRecive;
 import com.library.live.vd.VDDecoder;
 import com.library.live.view.PlayerView;
 import com.library.rpc.Commond;
-import com.library.rpc.Config;
 import com.library.rpc.RpcClicent;
-import com.library.wifidirect.WifiDirectClicent;
-import com.library.wifidirect.WifiDirectClicent1;
 import com.videolive.R;
 
 /**

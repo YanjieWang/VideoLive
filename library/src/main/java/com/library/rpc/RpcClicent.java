@@ -1,12 +1,10 @@
 package com.library.rpc;
 
 import android.content.Context;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Handler;
 
 import com.library.util.mLog;
-import com.library.wifidirect.WifiDirectClicent1;
+import com.library.wifidirect.WifiDirectClicent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -15,7 +13,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class RpcClicent implements WifiDirectClicent1.OnConnectedListener {
+public class RpcClicent implements WifiDirectClicent.OnConnectedListener {
 
     private static RpcClicent instance = new RpcClicent();
 
@@ -37,7 +35,7 @@ public class RpcClicent implements WifiDirectClicent1.OnConnectedListener {
 
     private ConnectStateChangeListener cscl;
 
-    private WifiDirectClicent1 wdc;
+    private WifiDirectClicent wdc;
     private Handler handler;
 
 
@@ -51,7 +49,7 @@ public class RpcClicent implements WifiDirectClicent1.OnConnectedListener {
         mLog.log(TAG, "startRpc this.handler="+this.handler);
         mLog.log(TAG, "startRpc handler="+handler);
         if(wdc == null){
-            wdc = new WifiDirectClicent1(this);
+            wdc = new WifiDirectClicent(this);
             wdc.init(context);
         }
         mLog.log(TAG, "start");

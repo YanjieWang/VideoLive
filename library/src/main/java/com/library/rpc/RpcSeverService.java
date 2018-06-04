@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
 
-import com.library.R;
 import com.library.live.Publish;
 import com.library.live.stream.BaseSend;
 import com.library.live.stream.upd.UdpSend;
 import com.library.live.vd.VDEncoder;
-import com.library.live.view.PublishView;
 import com.library.util.mLog;
-import com.library.wifidirect.WifiDirectService1;
+import com.library.wifidirect.WifiDirectService;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +38,7 @@ public class RpcSeverService extends Service {
 
     private String pushIp;
 
-    private WifiDirectService1 wds;
+    private WifiDirectService wds;
 
     @Nullable
     @Override
@@ -52,7 +47,7 @@ public class RpcSeverService extends Service {
     }
     @Override
     public void onCreate() {
-        wds = new WifiDirectService1();
+        wds = new WifiDirectService();
         wds.init(this);
         if(!Config.isLoaded) {
             Config.loadConfig(this);

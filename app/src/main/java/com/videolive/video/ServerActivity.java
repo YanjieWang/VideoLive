@@ -10,8 +10,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.library.rpc.RpcSeverService;
-import com.library.wifidirect.WifiDirectService;
-import com.library.wifidirect.WifiDirectService1;
 import com.videolive.R;
 
 import java.util.ArrayList;
