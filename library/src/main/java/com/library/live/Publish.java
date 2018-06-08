@@ -287,7 +287,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
             mLog.log("pictureSize", "推流分辨率  =  " + publishSize.getWidth() + " * " + publishSize.getHeight());
             mLog.log("pictureSize", "预览分辨率  =  " + previewSize.getWidth() + " * " + previewSize.getHeight());
             mLog.log("pictureSize", "采集分辨率  =  " + collectionSize.getWidth() + " * " + collectionSize.getHeight());
-            
+
 
             if (isPreview) {
                 publishView.setWeight((double) previewSize.getHeight() / previewSize.getWidth());
@@ -449,20 +449,20 @@ public class Publish implements TextureView.SurfaceTextureListener {
     }
 
     private void saveImage(byte[] bytes) {
-        if (mPCB != null ) {
-            mPCB.onPicture(bytes);
+        if (mPCB != null) {
+            mPCB.onPicture(ScreenshotsMode, bytes);
             mPCB = null;
         }
 
-        mLog.log(TAG,"保存图片，path="+picturedirpath);
-        if(picturedirpath == null ){
+        mLog.log(TAG, "保存图片，path=" + picturedirpath);
+        if (picturedirpath == null) {
             return;
         }
 
 
         OtherUtil.CreateDirFile(picturedirpath);
-        if(!new File(picturedirpath).exists()){
-            mLog.log(TAG,"保存图片失败，无权限创建 path="+picturedirpath);
+        if (!new File(picturedirpath).exists()) {
+            mLog.log(TAG, "保存图片失败，无权限创建 path=" + picturedirpath);
             return;
         }
 
@@ -551,7 +551,8 @@ public class Publish implements TextureView.SurfaceTextureListener {
     //旋转
     public void rotate() {
         if (isCameraBegin) {
-            if(publishView!=null)Rotate3dAnimation.rotate3dDegrees180(publishView, 700, 500, Rotate3dAnimation.ROTATE_Y_AXIS);
+            if (publishView != null)
+                Rotate3dAnimation.rotate3dDegrees180(publishView, 700, 500, Rotate3dAnimation.ROTATE_Y_AXIS);
             facingFront = !rotate ? CameraCharacteristics.LENS_FACING_FRONT : CameraCharacteristics.LENS_FACING_BACK;
             releaseCamera();
             initCamera();
@@ -562,7 +563,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
     }
 
     //不需要保存path传null，不需要回调 pcb传null
-    public void takePicture(String path,PictureCallBack pcb) {
+    public void takePicture(String path, PictureCallBack pcb) {
         mPCB = pcb;
         picturedirpath = path;
         if (ScreenshotsMode == CONVERSION) {
@@ -741,7 +742,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
         }
 
         public Buider setCenterScaleType(boolean isCenterScaleType) {
-            if(publishView!=null)publishView.setCenterScaleType(isCenterScaleType);
+            if (publishView != null) publishView.setCenterScaleType(isCenterScaleType);
             return this;
         }
 
@@ -749,8 +750,9 @@ public class Publish implements TextureView.SurfaceTextureListener {
             this.udpControl = udpControl;
             return this;
         }
+
         public Buider setPassWd(String passWd) {
-            Config.password_enc=passWd;
+            Config.password_enc = passWd;
             return this;
         }
 
@@ -759,7 +761,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
             Publish pb = new Publish(context, publishView, isPreview, publishSize, previewSize, collectionSize, frameRate,
                     publishBitrate, collectionBitrate, collectionbitrate_vc, publishbitrate_vc, codetype, rotate, dirpath,
                     baseSend, screenshotsMode);
-            mLog.log("siudf",""+pb);
+            mLog.log("siudf", "" + pb);
             return pb;
         }
     }
@@ -811,7 +813,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
     }
 
     public interface PictureCallBack {
-        public void onPicture(byte[] pic);
+        public void onPicture(int shutMode, byte[] pic);
 
     }
 

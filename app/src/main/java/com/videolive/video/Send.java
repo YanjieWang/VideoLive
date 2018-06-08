@@ -36,9 +36,9 @@ public class Send extends AppCompatActivity {
         takePicture = findViewById(R.id.takePicture);
         record = findViewById(R.id.record);
         BaseSend bs = null;
-        if(getIntent().getExtras().getString("net_protical").equals("Udp")){
+        if (getIntent().getExtras().getString("net_protical").equals("Udp")) {
             bs = new UdpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
-        }else{
+        } else {
             bs = new TcpSend(getIntent().getExtras().getString("url"), getIntent().getExtras().getInt("port"));
         }
         publish = new Publish.Buider(this, (PublishView) findViewById(R.id.publishView))
@@ -56,7 +56,7 @@ public class Send extends AppCompatActivity {
                 .setRotate(getIntent().getExtras().getBoolean("rotate"))
                 .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
                 .setCenterScaleType(true)
-                .setScreenshotsMode(Publish.CONVERSION)
+                .setScreenshotsMode(Publish.TAKEPHOTO)
                 .build();
 
         tuistar.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +90,10 @@ public class Send extends AppCompatActivity {
             public void onClick(View view) {
                 publish.takePicture(PICTURE_PATH, new Publish.PictureCallBack() {
                     @Override
-                    public void onPicture(byte[] pic) {
-                        mLog.log(TAG,"收到拍照回调");
+                    public void onPicture(int shutMode, byte[] pic) {
+
+                        //如何转成图片，请参考 Publish 中 private void saveImage(byte[] bytes)
+                        mLog.log(TAG, "收到拍照回调shutMode=" + shutMode);
                     }
                 });
             }
