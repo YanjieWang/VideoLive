@@ -5,6 +5,9 @@ import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
+import android.net.wifi.p2p.nsd.WifiP2pServiceRequest;
 import android.util.Log;
 
 import com.library.util.mLog;
@@ -12,7 +15,9 @@ import com.library.util.mLog;
 import java.net.NetworkInterface;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WifiDirectSuper implements Wifip2pActionListener {
     private static final String TAG = "WifiDirectSuper";
@@ -22,13 +27,23 @@ public class WifiDirectSuper implements Wifip2pActionListener {
     public Wifip2pReceiver mWifip2pReceiver;
     public WifiP2pInfo mWifiP2pInfo;
     public Context mContext;
+    public WifiP2pDnsSdServiceInfo mWifiP2pServiceInfo;
+    public static final String SERVICE_NAME = "real_time_live";
+    public static final String SERVICE_TYPE = "sender";
+
+
 
     public void init(Context context){
         //注册WifiP2pManager
         mContext = context;
         mWifiP2pManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mWifiP2pManager.initialize(context, context.getMainLooper(), this);
-
+        if(mWifiP2pServiceInfo == null){
+            Map<String,String> data = new HashMap<>();
+            data.put("service_name","live_service");
+            data.put("service_pass","test_pass");
+            mWifiP2pServiceInfo = WifiP2pDnsSdServiceInfo.newInstance(SERVICE_NAME, SERVICE_TYPE, data);
+        }
         //注册广播
         mWifip2pReceiver = new Wifip2pReceiver(mWifiP2pManager, mChannel, this);
         IntentFilter intentFilter = new IntentFilter();

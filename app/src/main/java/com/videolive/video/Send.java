@@ -11,16 +11,19 @@ import com.library.live.stream.BaseSend;
 import com.library.live.stream.tcp.TcpSend;
 import com.library.live.stream.upd.UdpSend;
 import com.library.live.view.PublishView;
+import com.library.util.mLog;
 import com.videolive.R;
 
 import java.io.File;
 
 public class Send extends AppCompatActivity {
+    private static final String TAG = "Send";
     private Publish publish;
     private Button tuistar;
     private Button rot;
     private Button record;
     private Button takePicture;
+    private static String PICTURE_PATH = Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +55,8 @@ public class Send extends AppCompatActivity {
                 .setCollectionSize(getIntent().getExtras().getInt("c_width"), getIntent().getExtras().getInt("c_height"))
                 .setRotate(getIntent().getExtras().getBoolean("rotate"))
                 .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
-                .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
                 .setCenterScaleType(true)
-                .setScreenshotsMode(Publish.TAKEPHOTO)
+                .setScreenshotsMode(Publish.CONVERSION)
                 .build();
 
         tuistar.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +88,12 @@ public class Send extends AppCompatActivity {
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                publish.takePicture();
+                publish.takePicture(PICTURE_PATH, new Publish.PictureCallBack() {
+                    @Override
+                    public void onPicture(byte[] pic) {
+                        mLog.log(TAG,"收到拍照回调");
+                    }
+                });
             }
         });
 

@@ -47,14 +47,22 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Publish implements TextureView.SurfaceTextureListener {
+
+    public static final String TAG = "Publish";
     private Context context;
     private final int frameMax = 4;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+    private String picturedirpath;
+    private PictureCallBack mPCB;
+
+
     //帧率控制队列
     private ArrayBlockingQueue<Image> frameRateControlQueue = new ArrayBlockingQueue<>(frameMax);
     //视频编码
@@ -102,8 +110,6 @@ public class Publish implements TextureView.SurfaceTextureListener {
     private Size collectionSize;
     //控制前后摄像头
     private int facingFront;
-    //拍照路径
-    private String picturedirpath;
     //拍照回调
     private PictureCallback pictureCallback;
 
@@ -120,7 +126,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
 
     private Publish(Context context, PublishView publishView, boolean isPreview, Size publishSize, Size previewSize, Size collectionSize,
                     int frameRate, int publishBitrate, int collectionBitrate, int collectionbitrate_vc, int publishbitrate_vc, String codetype,
-                    boolean rotate, String dirpath, BaseSend baseSend, String picturedirpath, int ScreenshotsMode) {
+                    boolean rotate, String dirpath, BaseSend baseSend, int ScreenshotsMode) {
         this.ScreenshotsMode = ScreenshotsMode;
         this.context = context;
         this.publishSize = publishSize;
@@ -134,7 +140,6 @@ public class Publish implements TextureView.SurfaceTextureListener {
         this.codetype = codetype;
         this.publishView = publishView;
         this.baseSend = baseSend;
-        this.picturedirpath = picturedirpath;
         this.rotate = rotate;
         facingFront = rotate ? CameraCharacteristics.LENS_FACING_FRONT : CameraCharacteristics.LENS_FACING_BACK;
         this.isPreview = isPreview;
@@ -444,10 +449,26 @@ public class Publish implements TextureView.SurfaceTextureListener {
     }
 
     private void saveImage(byte[] bytes) {
+        if (mPCB != null ) {
+            mPCB.onPicture(bytes);
+            mPCB = null;
+        }
+
+        mLog.log(TAG,"保存图片，path="+picturedirpath);
+        if(picturedirpath == null ){
+            return;
+        }
+
+
         OtherUtil.CreateDirFile(picturedirpath);
+        if(!new File(picturedirpath).exists()){
+            mLog.log(TAG,"保存图片失败，无权限创建 path="+picturedirpath);
+            return;
+        }
+
         FileOutputStream output;
         try {
-            output = new FileOutputStream(picturedirpath + File.separator + System.currentTimeMillis() + ".jpg");
+            output = new FileOutputStream(picturedirpath + File.separator + sdf.format(System.currentTimeMillis()) + ".jpg");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
@@ -475,7 +496,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
         try {
             output.flush();
             if (pictureCallback != null) {
-                pictureCallback.Success(picturedirpath + File.separator + System.currentTimeMillis() + ".jpg");
+                pictureCallback.Success(picturedirpath + File.separator + sdf.format(System.currentTimeMillis()) + ".jpg");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -540,7 +561,10 @@ public class Publish implements TextureView.SurfaceTextureListener {
         }
     }
 
-    public void takePicture() {
+    //不需要保存path传null，不需要回调 pcb传null
+    public void takePicture(String path,PictureCallBack pcb) {
+        mPCB = pcb;
+        picturedirpath = path;
         if (ScreenshotsMode == CONVERSION) {
             useuvPicture = true;
 
@@ -705,10 +729,6 @@ public class Publish implements TextureView.SurfaceTextureListener {
             return this;
         }
 
-        public Buider setPictureDirPath(String picturedirpath) {
-            this.picturedirpath = picturedirpath;
-            return this;
-        }
 
         public Buider setRotate(boolean rotate) {
             this.rotate = rotate;
@@ -738,7 +758,7 @@ public class Publish implements TextureView.SurfaceTextureListener {
             baseSend.setUdpControl(udpControl);
             Publish pb = new Publish(context, publishView, isPreview, publishSize, previewSize, collectionSize, frameRate,
                     publishBitrate, collectionBitrate, collectionbitrate_vc, publishbitrate_vc, codetype, rotate, dirpath,
-                    baseSend, picturedirpath, screenshotsMode);
+                    baseSend, screenshotsMode);
             mLog.log("siudf",""+pb);
             return pb;
         }
@@ -788,6 +808,11 @@ public class Publish implements TextureView.SurfaceTextureListener {
                 ", yuvPicture=" + Arrays.toString(yuvPicture) +
                 ", pictureRunnable=" + pictureRunnable +
                 '}';
+    }
+
+    public interface PictureCallBack {
+        public void onPicture(byte[] pic);
+
     }
 
 }

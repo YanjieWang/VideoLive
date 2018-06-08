@@ -105,7 +105,6 @@ public class RpcSeverService extends Service {
                                             .setCollectionSize(1920,1080)
                                             .setRotate(false)
                                             .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
-                                            .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
                                             .setCenterScaleType(true)
                                             .setScreenshotsMode(Publish.TAKEPHOTO)
                                             .build();
@@ -131,7 +130,6 @@ public class RpcSeverService extends Service {
                                                 .setCollectionSize(1920,1080)
                                                 .setRotate(false)
                                                 .setVideoDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive")
-                                                .setPictureDirPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoPicture")
                                                 .setCenterScaleType(true)
                                                 .setScreenshotsMode(Publish.TAKEPHOTO)
                                                 .build();
