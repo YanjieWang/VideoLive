@@ -25,13 +25,8 @@ import com.videolive.R;
 public class ClientActivity extends Activity {
 
     private Button connect;
-    private Button send_change_pass;
-    private Button start_push;
-    private Button stop_push;
-    private Button start_recode;
-    private Button stop_recode;
-    private Button switch_camera;
     private EditText old_pass,new_pass;
+    private EditText enc_pass;
     private RpcClicent clicent;
     private Handler han = new Handler();
     private Toast toast = null;
@@ -67,91 +62,7 @@ public class ClientActivity extends Activity {
         old_pass = findViewById(R.id.old_pass);
         new_pass = findViewById(R.id.new_pass);
         playerView = findViewById(R.id.playerView);
-        connect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(connect.getText().toString().equals("连接服务端")){
-                    connect.setText("正在连接");
-                    connect.setEnabled(false);
-                    clicent.startRpc(han, cscl,ClientActivity.this);
-                } else if (connect.getText().toString().equals("断开连接")){
-                    connect.setText("正在断开连接");
-                    connect.setEnabled(false);
-                    clicent.stopRpc();
-                }
-            }
-        });
-
-
-        send_change_pass=findViewById(R.id.send_change_pass);
-
-        start_push=findViewById(R.id.start_push);
-        stop_push=findViewById(R.id.stop_push);
-        start_recode=findViewById(R.id.start_recode);
-        stop_recode=findViewById(R.id.stop_recode);
-        switch_camera=findViewById(R.id.switch_camera);
-
-        send_change_pass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.ChangePass req = new Commond.Request.ChangePass();
-                req.pass=old_pass.getText().toString();
-                req.pass_new = new_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-        start_push.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.StartPush req = new Commond.Request.StartPush();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-
-        stop_push.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.StopPush req = new Commond.Request.StopPush();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-
-        stop_recode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.StopRecode req = new Commond.Request.StopRecode();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-
-        start_recode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.StartRecode req = new Commond.Request.StartRecode();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-
-        switch_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.StartRecode req = new Commond.Request.StartRecode();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
-        switch_camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Commond.Request.SwitchCamera req = new Commond.Request.SwitchCamera();
-                req.pass=old_pass.getText().toString();
-                clicent.sendRequest(req);
-            }
-        });
+        enc_pass = findViewById(R.id.enc_pass);
 
         BaseRecive br = new UdpRecive(8765);
         //BaseRecive br = new TcpRecive(getIntent().getExtras().getInt("port"));
@@ -166,6 +77,60 @@ public class ClientActivity extends Activity {
                 .build();
         player.start();
     }
+
+
+
+    public void connect(View v){
+        if(connect.getText().toString().equals("连接服务端")){
+            connect.setText("正在连接");
+            connect.setEnabled(false);
+            clicent.startRpc(han, cscl,ClientActivity.this);
+        } else if (connect.getText().toString().equals("断开连接")){
+            connect.setText("正在断开连接");
+            connect.setEnabled(false);
+            clicent.stopRpc();
+        }
+    }
+    public void change_pass(View v){
+        Commond.Request.ChangePass req = new Commond.Request.ChangePass();
+        req.pass=old_pass.getText().toString();
+        req.pass_new = new_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+
+    public void change_enc_pass(View v){
+        Commond.Request.ChangeEncPass req = new Commond.Request.ChangeEncPass();
+        req.pass=old_pass.getText().toString();
+        req.enc_pass = enc_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+
+    public void start_push(View v){
+        Commond.Request.StartPush req = new Commond.Request.StartPush();
+        req.pass=old_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+    public void stop_push(View v){
+        Commond.Request.StopPush req = new Commond.Request.StopPush();
+        req.pass=old_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+    public void start_recode(View v){
+        Commond.Request.StartRecode req = new Commond.Request.StartRecode();
+        req.pass=old_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+    public void stop_recode(View v){
+        Commond.Request.StopRecode req = new Commond.Request.StopRecode();
+        req.pass=old_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+    public void switch_camera(View v){
+        Commond.Request.SwitchCamera req = new Commond.Request.SwitchCamera();
+        req.pass=old_pass.getText().toString();
+        clicent.sendRequest(req);
+    }
+
 
     @Override
     protected void onDestroy() {

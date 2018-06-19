@@ -102,6 +102,10 @@ public class VDDecoder implements SurfaceHolder.Callback, VideoInformationInterf
                 mediaFormat.setByteBuffer("csd-0", getH265information());
             }
             writeMp4.addTrack(mediaFormat, WriteMp4.video);
+            ByteBuffer data = ByteBuffer.wrap(information);
+            MediaCodec.BufferInfo binfo = new MediaCodec.BufferInfo();
+            binfo.set(0, information.length, 0,MediaCodec.BUFFER_FLAG_CODEC_CONFIG);
+            writeMp4.write(WriteMp4.video,data,binfo);
             mCodec.configure(mediaFormat, holder.getSurface(), null, 0);
             mCodec.start();
             isMediaCodecInit = true;

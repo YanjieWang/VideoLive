@@ -42,6 +42,10 @@ public class VCDecoder implements VoiceCallback {
             byte[] data = new byte[]{(byte) 0x12, (byte) 0x10};
             mediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(data));
             writeMp4.addTrack(mediaFormat, WriteMp4.voice);
+            ByteBuffer datainfo = ByteBuffer.wrap(data);
+            MediaCodec.BufferInfo binfo = new MediaCodec.BufferInfo();
+            binfo.set(0, data.length, 0,MediaCodec.BUFFER_FLAG_CODEC_CONFIG);
+            writeMp4.write(WriteMp4.voice,datainfo,binfo);
 
             mDecoder.configure(mediaFormat, null, null, 0);
         } catch (IOException e) {

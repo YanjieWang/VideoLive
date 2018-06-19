@@ -3,6 +3,8 @@ package com.library.live.stream.upd;
 import android.util.Log;
 
 import com.library.live.stream.BaseSend;
+import com.library.rpc.Config;
+import com.library.util.Aes;
 import com.library.util.OtherUtil;
 import com.library.util.SingleThreadExecutor;
 import com.library.util.mLog;
@@ -68,6 +70,7 @@ public class UdpSend extends BaseSend {
 
     @Override
     public void startsend() {
+        new Throwable().printStackTrace();
         if (packetsendPush != null) {
             buffvoice.clear();
             voiceSendNum = 0;
@@ -218,14 +221,19 @@ public class UdpSend extends BaseSend {
                     while (PUBLISH_STATUS == PUBLISH_STATUS_START) {
                         data = sendQueue.take();
                         if (data != null) {
-                            packetsendPush.setData(data);
-                            try {
-                                socket.send(packetsendPush);
-                            } catch (IOException e) {
-                                mLog.log("senderror", "发送失败");
-                                e.printStackTrace();
+                            if(Config.password_enc != null && Config.password_enc.length() == 16){
+                                data = Aes.Encrypt(data,0,data.length,Config.password_enc);
                             }
-                            Thread.sleep(1);
+                            if(data != null) {
+                                packetsendPush.setData(data);
+
+                                try {
+                                    socket.send(packetsendPush);
+                                } catch (IOException e) {
+                                    mLog.log("senderror", "发送失败");
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     }
                 } catch (InterruptedException e) {

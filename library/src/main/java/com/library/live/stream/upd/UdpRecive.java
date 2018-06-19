@@ -6,6 +6,8 @@ import android.os.HandlerThread;
 import com.library.common.UdpBytes;
 import com.library.live.stream.BaseRecive;
 import com.library.live.stream.IsInBuffer;
+import com.library.rpc.Config;
+import com.library.util.Aes;
 import com.library.util.OtherUtil;
 import com.library.util.SingleThreadExecutor;
 import com.library.util.mLog;
@@ -90,8 +92,14 @@ public class UdpRecive extends BaseRecive implements CachingStrategyCallback {
                     while (RECIVE_STATUS == RECIVE_STATUS_START) {
                         try {
                             socket.receive(packetreceive);
-                            OtherUtil.addQueue(udpQueue, Arrays.copyOfRange(packetreceive.getData(), 0, packetreceive.getLength()));
-                            udpHandler.post(udprunnable);
+                            byte[] data = Arrays.copyOfRange(packetreceive.getData(), 0, packetreceive.getLength());
+                            if(Config.password_enc != null && Config.password_enc.length() == 16){
+                                data = Aes.Decrypt(data,0,data.length,Config.password_enc);
+                            }
+                            if(data!=null) {
+                                OtherUtil.addQueue(udpQueue, data);
+                                udpHandler.post(udprunnable);
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

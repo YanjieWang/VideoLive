@@ -48,6 +48,7 @@ public class TcpSend extends BaseSend {
     @Override
     public void startsend() {
         issend = true;
+        PUBLISH_STATUS = PUBLISH_STATUS_START;
         starsendThread();
     }
 
@@ -55,6 +56,7 @@ public class TcpSend extends BaseSend {
     public void stopsend() {
         issend = false;
         if (executorService != null) {
+            PUBLISH_STATUS = PUBLISH_STATUS_STOP;
             executorService = null;
         }
     }
@@ -154,7 +156,7 @@ public class TcpSend extends BaseSend {
                         try {
                             mLog.log("senderror", "发送数据");
                             //stream.writeObject(sendQueue.poll());
-                            if(Config.password_enc != null) {
+                            if(Config.password_enc != null && Config.password_enc.length()!=0) {
                                 stream.writeObject(sendQueue.take().encrypt(Config.password_enc));
                             }else{
                                 stream.writeObject(sendQueue.take());

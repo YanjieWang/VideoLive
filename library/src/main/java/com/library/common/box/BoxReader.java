@@ -2,6 +2,7 @@ package com.library.common.box;
 
 import com.library.rpc.Config;
 import com.library.util.Aes;
+import com.library.util.ByteUtil;
 import com.library.util.mLog;
 
 import java.io.FileInputStream;
@@ -102,7 +103,7 @@ public class BoxReader extends Box{
             }
 
             if (encrypted) {
-                if(Config.password_enc==null){
+                if(Config.password_enc==null && Config.password_enc.length() != 0){
                     mLog.log(TAG,"BoxReader启动失败，数据已加密，Box密码为null");
                     stop();
                     return false;
@@ -181,6 +182,7 @@ public class BoxReader extends Box{
             } else {
                 if((tag == TAG_VIDEO) || (tag==TAG_AUDIO)||(tag==TAG_VIDEO_INFO)||(tag==TAG_AUDIO_INFO)){
                     code = (byte) tag;
+                    mLog.log(TAG,"BoxReader 获取数据帧类型tag=" +tag);
                 } else {
                     mLog.log(TAG,"BoxReader 获取数据帧类型失败 未知 tag=" +tag);
                     return null;
@@ -228,7 +230,7 @@ public class BoxReader extends Box{
 
 
             if (encrypted) {
-                if(Config.password_enc==null){
+                if(Config.password_enc==null && Config.password_enc.length() != 0){
                     mLog.log(TAG,"解密失败，数据已加密，Box密码为null");
                     return null;
                 }
@@ -237,6 +239,14 @@ public class BoxReader extends Box{
                     mLog.log(TAG,"解密失败，解密揭秘失败，可能密码错误");
                     return null;
                 }
+            }
+            if((tag==TAG_VIDEO_INFO)||(tag==TAG_AUDIO_INFO)){
+                if (tag==TAG_VIDEO_INFO) {
+                    mLog.log(TAG,"视频信息="+ ByteUtil.byte_to_16(data));
+                } else {
+                    mLog.log(TAG,"音频信息="+ ByteUtil.byte_to_16(data));
+                }
+
             }
             mLog.log(TAG,"读取数据 dataLength="+dataLength+",tag="+tag+",time="+time+",flag="+flag);
             return new Frame((byte)tag,time,flag,data);

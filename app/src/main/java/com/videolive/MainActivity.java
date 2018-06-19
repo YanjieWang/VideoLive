@@ -48,9 +48,14 @@ public class MainActivity extends SuperActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         publishbitrate_pass = findViewById(R.id.publishbitrate_pass);
-        publishbitrate_pass.setText(Config.password_enc);
         requestpermission();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        publishbitrate_pass.setText(Config.password_enc);
     }
 
     private void requestpermission() {
@@ -106,7 +111,7 @@ public class MainActivity extends SuperActivity {
             Config.saveConfig(getApplicationContext());
             toast("保存成功");
         } else if (pass.length() == 0) {
-            Config.password_enc = null;
+            Config.password_enc = "";
             Config.saveConfig(getApplicationContext());
             toast("清除密码成功");
         } else {

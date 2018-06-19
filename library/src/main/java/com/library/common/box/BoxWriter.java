@@ -16,6 +16,7 @@ public class BoxWriter extends Box {
     private OutputStream os;
 
 
+
     /*以下为头一个包的定义，包含以下内容
     1.       byte[0-3] 长度，假设转成int length
     2.是否加密 byte[4] 0 未加密 1 已加密
@@ -29,11 +30,10 @@ public class BoxWriter extends Box {
 
         if(started){
             mLog.log(TAG,"BoxWriter启动失败,已经启动过了");
-            stop();
             return false;
         }
         started = true;
-        encrypted = Config.password_enc != null;
+        encrypted = Config.password_enc != null && Config.password_enc.length() != 0;
         try {
             os = new FileOutputStream(file);
             byte[] header = FIX_HEADER.getBytes("UTF-8");

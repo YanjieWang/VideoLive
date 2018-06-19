@@ -70,13 +70,6 @@ public class RecordEncoderVC {
 
                 if (MediaCodec.INFO_OUTPUT_FORMAT_CHANGED == outputBufferIndex) {
                     writeMp4.addTrack(mediaCodec.getOutputFormat(), WriteMp4.voice);
-                    while (writeMp4.RECODE_STATUS != writeMp4.RECODE_STATUS_START){
-                        try {
-                            Thread.currentThread().sleep(10);
-                        }catch (InterruptedException e){
-                            e.printStackTrace();
-                        }
-                    }
                 }
 
                 while (outputBufferIndex >= 0) {

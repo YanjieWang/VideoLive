@@ -1,6 +1,7 @@
 package com.videolive.video;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import com.library.rpc.Commond;
 import com.library.util.mLog;
 import com.videolive.R;
 
+import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Recive extends AppCompatActivity {
@@ -38,7 +40,6 @@ public class Recive extends AppCompatActivity {
             br = new UdpRecive(getIntent().getExtras().getInt("port"));
         }else{
             br = new TcpRecive(getIntent().getExtras().getInt("port"));
-            //br.setDecryptPassword("1234567890123456");
         }
 
         player = new Player.Buider((PlayerView) findViewById(R.id.playerView))
@@ -46,7 +47,7 @@ public class Recive extends AppCompatActivity {
                 .setVideoCode(getIntent().getExtras().getString("videoCode"))
                 .setMultiple(getIntent().getExtras().getInt("multiple"))
                 .setCenterScaleType(true)
-                .setVideoPath("/sdcard")
+                .setVideoPath(Environment.getExternalStorageDirectory().getPath() + File.separator + "VideoLive"+ File.separator+"clicent")
                 .build();
 
         jiestar.setOnClickListener(new View.OnClickListener() {

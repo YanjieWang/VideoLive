@@ -29,11 +29,11 @@ public final class Config {
     public static final String PASSWORD_DEFAULT = "123456";
     public static final String PASSWORD_KEY = "password";
 
-    public static final String PASSWORD_ENC_DEFAULT = null;
+    public static final String PASSWORD_ENC_DEFAULT = "1234567890123456";
     public static final String PASSWORD_ENC_KEY= "password_enc";
 
     //登录密码
-    public static String password = PASSWORD_DEFAULT;//长度必须>6
+    public static String password = PASSWORD_ENC_DEFAULT;//长度必须>6
 
     //加解密密码
     public static String password_enc = PASSWORD_ENC_DEFAULT;//长度必须>6
@@ -48,7 +48,7 @@ public final class Config {
             control_port = sp.getInt(CONTROL_PORT_KEY, CONTROL_PORT_DEFAULT);
             donwload_prot = sp.getInt(DOWNLOAD_PORT_KEY, DOWNLOAD_PORT_DEFAULT);
             password = sp.getString(PASSWORD_KEY, PASSWORD_DEFAULT);
-            password_enc = sp.getString(PASSWORD_ENC_KEY, null);
+            password_enc = sp.getString(PASSWORD_ENC_KEY, PASSWORD_ENC_DEFAULT);
             push_prot = sp.getInt(PUSH_PORT_KEY, PUSH_PORT_DEFAULT);
             isLoaded = true;
         }

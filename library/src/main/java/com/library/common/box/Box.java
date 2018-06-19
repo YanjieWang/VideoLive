@@ -36,6 +36,10 @@ public class Box {
     protected byte[] intBytes = new byte[4];
     protected byte[] longBytes = new byte[8];
 
+    public boolean isStarted(){
+        return started;
+    }
+
     public static int byteArrayToInt(byte[] b) {
         return   b[3] & 0xFF |
                 (b[2] & 0xFF) << 8 |
@@ -94,6 +98,7 @@ public class Box {
     }
 
     public static ByteBuffer getH264SPS(byte[] information) {
+        mLog.log(TAG, "h264 information" + ByteUtil.byte_to_16(information));
         for (int i = 5; i < information.length; i++) {
             if (information[i] == (byte) 0x00
                     && information[i + 1] == (byte) 0x00
@@ -102,7 +107,7 @@ public class Box {
                     && information[i + 4] == (byte) 0x68) {
                 byte[] bytes = new byte[i];
                 System.arraycopy(information, 0, bytes, 0, i);
-                mLog.log("VDDecoder_information", "h264 sps" + ByteUtil.byte_to_16(bytes));
+                mLog.log(TAG, "h264 sps" + ByteUtil.byte_to_16(bytes));
                 return ByteBuffer.wrap(bytes);
             }
         }
@@ -110,6 +115,7 @@ public class Box {
     }
 
     public static ByteBuffer getH264PPS(byte[] information) {
+        mLog.log(TAG, "h264 information" + ByteUtil.byte_to_16(information));
         for (int i = 5; i < information.length; i++) {
             if (information[i] == (byte) 0x00
                     && information[i + 1] == (byte) 0x00
@@ -118,14 +124,16 @@ public class Box {
                     && information[i + 4] == (byte) 0x68) {
                 byte[] bytes = new byte[information.length - i];
                 System.arraycopy(information, i, bytes, 0, information.length - i);
-                mLog.log("VDDecoder_information", "h264 pps" + ByteUtil.byte_to_16(bytes));
+                mLog.log(TAG, "h264 pps" + ByteUtil.byte_to_16(bytes));
                 return ByteBuffer.wrap(bytes);
             }
+
         }
         return null;
     }
 
     public static ByteBuffer getH265information(byte[] information) {
+        mLog.log(TAG, "h264 information" + ByteUtil.byte_to_16(information));
         for (int i = 5; i < information.length; i++) {
             if (information[i] == (byte) 0x00
                     && information[i + 1] == (byte) 0x00
@@ -134,7 +142,7 @@ public class Box {
                     && information[i + 4] == (byte) 0x26) {
                 byte[] bytes = new byte[i];
                 System.arraycopy(information, 0, bytes, 0, i);
-                mLog.log("VDDecoder_information", "h265信息" + ByteUtil.byte_to_16(bytes));
+                mLog.log(TAG, "h265信息" + ByteUtil.byte_to_16(bytes));
                 return ByteBuffer.wrap(bytes);
             }
         }

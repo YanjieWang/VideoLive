@@ -162,7 +162,9 @@ public class WifiDirectClicent extends WifiDirectSuper {
                 @Override
                 public void onSuccess() {
                     Log.e(TAG, "连接成功，mConnectCallBack="+mConnectCallBack);
-                    Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
+                    if(mContext!=null){
+                        Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
+                    }
                     if (mDialog!=null && mDialog.isShowing()) {
                         mDialog.dismiss();
                     }
@@ -171,7 +173,8 @@ public class WifiDirectClicent extends WifiDirectSuper {
                 @Override
                 public void onFailure(int reason) {
                     Log.e(TAG, "连接失败");
-                    Toast.makeText(mContext, "连接失败", Toast.LENGTH_SHORT).show();
+
+                    if(mContext != null)Toast.makeText(mContext, "连接失败", Toast.LENGTH_SHORT).show();
                 }
             });
         }

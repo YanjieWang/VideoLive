@@ -102,13 +102,6 @@ public class RecordEncoderVD {
                         if (MediaCodec.INFO_OUTPUT_FORMAT_CHANGED == outputBufferIndex) {
                             //sps pps信息
                             writeMp4.addTrack(mediaCodec.getOutputFormat(), WriteMp4.video);
-                            while (writeMp4.RECODE_STATUS != writeMp4.RECODE_STATUS_START){
-                                try {
-                                    Thread.currentThread().sleep(10);
-                                }catch (InterruptedException e){
-                                    e.printStackTrace();
-                                }
-                            }
                         }
 
                         while (outputBufferIndex >= 0) {
